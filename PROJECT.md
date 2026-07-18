@@ -262,30 +262,78 @@ FHIR-only tool can't see, while the note/order keeps us from **acting on** an of
 remark. Detection from the conversation; recommendation from the record; decision from
 the human.
 
+**One important limit: "signed beats spoken" only holds _within the same doctor_.**
+The rule above is really *self-reconsideration* — one clinician's considered record
+supersedes their *own* offhand remark (they say "let's hold the heparin," then sign to
+continue it for a good reason). It is **not** a license for one doctor's signed order to
+override a *different* doctor's spoken directive. A spoken "hold" from the surgeon is not
+inferior to a signed "resume" from cardiology — those are two independent clinicians
+disagreeing, and it **still needs to be flagged**, not silently auto-resolved. So across
+different prescribers, authority *abstains* — any contradiction (spoken-vs-signed or
+signed-vs-signed) surfaces as a conflict with **both prescribers' orders side by side**
+for the human. This is exactly the multi-specialist hero case (surgeon / hospitalist /
+ID), and it's why every med row carries *who* ordered it, not just *what* the record
+says. (Mechanics: see [`ARCHITECTURE.md`](./ARCHITECTURE.md).)
+
 ---
 
-## Engine (the interesting 80%)
+## How it works — the logic, in plain terms
 
-1. **Normalize** all meds to a common shape (name, dose, route, frequency, status,
-   prescriber, source, category).
-2. **Three-way diff** across transcript / FHIR / prescriptions → classify each med:
-   `unchanged`, `dose-changed`, `newly-started`, `discontinued`,
-   `conflict`, `mentioned-but-not-recorded`.
-3. **Explain + cite** — for each flag, an LLM generates the reconciliation reason and
-   pulls the supporting **transcript quote** (evidence, with prescriber attribution).
-4. **Rank by risk** — high-risk meds, elderly, polypharmacy, cross-prescriber
-   conflicts float to the top of a **"needs a decision" queue.** Everything that
-   *agrees* across sources is pre-populated and collapsed, so attention lands only on
-   the disagreements.
-5. **Output** — a **pre-populated draft** outpatient med list (the agreements already
-   filled in) + the **disagreements surfaced with evidence** for the clinician to
-   decide + auto-drafted patient-friendly "why this changed" lines for the AVS.
+*The reasoning a discharge pharmacist does by hand; this is what we automate.*
 
-**Framing:** the engine's job is to *assemble and surface*, not to *decide*. Every
-flag is a disagreement between sources shown with its receipt; the clinician resolves
-it. Precision matters more than recall here — a quiet, high-signal queue that the
-clinician trusts beats a noisy one they learn to ignore (alert fatigue is the failure
-mode of every med-rec tool, and the thing we design against).
+**We read four sources, and each tells us something different:**
+
+1. **Her home med list** — what she was actually taking before admission. The
+   baseline everything else is compared against.
+2. **The hospital's orders** — what each team prescribed during the stay, and *who*
+   prescribed it (surgeon, hospitalist, ID). This is what changed while she was in.
+3. **The ambient conversation (transcript)** — what the clinicians actually said out
+   loud: the reasoning ("we're stopping this because…", "keep taking that, it's
+   important"), often spoken before, or instead of, being written down anywhere.
+4. **The signed note** — the official, committed written version of what should
+   happen (its Assessment & Plan states the decision in the clinician's own words).
+
+The home list and hospital orders are structured facts we read directly. The
+conversation and the note are where *intent* lives — what was decided and why.
+
+**We compare them one medication at a time.** For each drug: was it on the home
+list? Did the hospital order it, and which team? Did anyone say anything about it in
+the room? Is it in the note? Then the simple question: *do the sources agree on
+whether she should be taking this, and at what dose?*
+
+**Each drug resolves to one of a few situations:**
+- **All sources agree** → fill it into the draft list, quietly. (Most meds.)
+- **On the home list, gone from the discharge orders, and no one said to stop it** →
+  likely an accidental drop → raise it.
+- **Someone said to stop it, but it is still on the list** → raise it.
+- **Two teams prescribed for the same thing** → duplication → raise it.
+- **A course was started with no stated end** → orphaned → raise it.
+- **Said in the room but never turned into an order** → raise it.
+
+**When sources disagree, the signed record wins — always.** Orders and note are
+deliberate and committed; the conversation is casual and provisional (a clinician may
+say "let's stop the heparin," then keep it on the signed order for a good reason). So
+the conversation's only job is to *make us notice* the disagreement — it never
+overrides. Our suggested resolution defaults to the signed record, with the spoken
+quote shown beside it as *"why we're asking,"* not as the answer.
+
+**What we hand back:** a discharge list already filled in for everything that agreed,
+plus a short, ranked list of the disagreements — each showing the drug, the conflict,
+who said what, and the exact quote — so the clinician spends attention only on the few
+that need a human decision. We assemble and surface; the human decides.
+
+---
+
+## Architecture
+
+The full engineering build spec — every step from the logic above turned into concrete
+workflow (what's deterministic vs. an LLM call, the contracts between steps, the stack)
+— lives in **[`ARCHITECTURE.md`](./ARCHITECTURE.md)**.
+
+In one line: it's a **workflow, not an agent** — a fixed path
+(*read → aggregate → match → classify → explain → rank*) that spends the LLM only where
+meaning lives in prose or drug identity is fuzzy (extract · 1 Matcher · N_flags
+Explainers), and keeps everything else deterministic so every decision is inspectable.
 
 ## UI (the demoable 20%)
 
