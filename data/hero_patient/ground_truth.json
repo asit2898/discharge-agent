@@ -1,0 +1,68 @@
+{
+  "patient": "Philomena Goodwin",
+  "encounter_id": "89d0a5a1-39b4-95ef-adm1-2026dischg0001",
+  "planted_discrepancies": [
+    {
+      "id": "D1",
+      "type": "discontinued_but_listed",
+      "medication": "ramipril 2.5 mg",
+      "prescriber": "Dr. Alan Whitfield",
+      "expected_resolution": "REMOVE from discharge list \u2014 intentionally discontinued for post-op AKI.",
+      "evidence": {
+        "transcript": "We stopped that when you came in ... I want it to stay off until your kidney doctor rechecks",
+        "note": "Ramipril: DISCONTINUED. ... Do NOT resume",
+        "conflict": "Discharge order set still contains ramipril 2.5 mg active."
+      }
+    },
+    {
+      "id": "D2",
+      "type": "duplicate_therapy",
+      "medication": "labetalol 100 mg (duplicate of metoprolol succinate ER 100 mg)",
+      "prescriber": "Dr. Alan Whitfield",
+      "expected_resolution": "REMOVE labetalol \u2014 replaced by once-daily metoprolol; both are beta-blockers.",
+      "evidence": {
+        "transcript": "you stop the labetalol completely and take the metoprolol instead",
+        "note": "Labetalol: DISCONTINUED. Transitioned to once-daily metoprolol succinate",
+        "conflict": "Discharge order set contains BOTH labetalol and metoprolol succinate ER."
+      }
+    },
+    {
+      "id": "D3",
+      "type": "orphaned_course",
+      "medication": "amoxicillin-clavulanate 875/125 mg",
+      "prescriber": "Dr. Marcus Bell",
+      "expected_resolution": "ADD to discharge list \u2014 3 days remain of a 7-day course.",
+      "evidence": {
+        "transcript": "you need to finish the full seven days, so that's three more days once you get home",
+        "note": "Amoxicillin-clavulanate ... CONTINUE to complete 7-day course ... 3 days remain",
+        "conflict": "Active inpatient course; MISSING from the discharge order set."
+      }
+    }
+  ],
+  "agreement_cases_should_not_flag": [
+    {
+      "medication": "atorvastatin 80 mg",
+      "reason": "continued unchanged"
+    },
+    {
+      "medication": "metformin ER 500 mg",
+      "reason": "held during AKI, correctly resumed at discharge"
+    },
+    {
+      "medication": "prasugrel 10 mg",
+      "reason": "held peri-op by surgeon, correctly resumed \u2014 note + transcript agree"
+    },
+    {
+      "medication": "aspirin 81 mg",
+      "reason": "continued unchanged"
+    },
+    {
+      "medication": "metoprolol succinate ER 100 mg",
+      "reason": "intended new med (the switch target), not a duplicate on its own"
+    },
+    {
+      "medication": "hydrocodone/acetaminophen",
+      "reason": "new post-op med, expected"
+    }
+  ]
+}

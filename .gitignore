@@ -17,6 +17,10 @@ build/
 .env.local
 *.key
 
+# Large raw Synthea bundles (regenerable from seed — see data/README.md)
+**/source_synthea_bundle.json
+philomena_source_bundle.json
+
 # OS / editor
 .DS_Store
 .vscode/

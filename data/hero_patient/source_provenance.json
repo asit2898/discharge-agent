@@ -1,0 +1,83 @@
+{
+  "note": "Compact provenance for the hero fixture. The full 28MB Synthea bundle is not committed; regenerate it deterministically (see data/README.md). This file records the real Synthea patient identity and the exact RxNorm codings reused in hero_patient.json.",
+  "synthea": {
+    "seed": 4242,
+    "population": "Massachusetts",
+    "generator": "synthetichealth/synthea",
+    "fhir_version": "R4"
+  },
+  "source_patient": {
+    "resourceType": "Patient",
+    "id": "89d0a5a1-39b4-95ef-d7a6-22168f2d641a",
+    "name": [
+      {
+        "use": "official",
+        "family": "Goodwin327",
+        "given": [
+          "Philomena945",
+          "Desire394"
+        ],
+        "prefix": [
+          "Ms."
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1944-05-16",
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/geolocation",
+            "extension": [
+              {
+                "url": "latitude",
+                "valueDecimal": 42.30937118855822
+              },
+              {
+                "url": "longitude",
+                "valueDecimal": -71.11877814183138
+              }
+            ]
+          }
+        ],
+        "line": [
+          "817 Bartoletti Flat"
+        ],
+        "city": "Boston",
+        "state": "MA",
+        "postalCode": "02151",
+        "country": "US"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "S",
+          "display": "Never Married"
+        }
+      ],
+      "text": "Never Married"
+    }
+  },
+  "reused_rxnorm_codings": {
+    "2001499": "Vitamin B12 5 MG/ML Injectable Solution",
+    "106892": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]",
+    "860975": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet",
+    "904419": "Alendronic acid 10 MG Oral Tablet",
+    "313782": "Acetaminophen 325 MG Oral Tablet",
+    "309362": "Clopidogrel 75 MG Oral Tablet",
+    "312961": "Simvastatin 20 MG Oral Tablet",
+    "866412": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet",
+    "705129": "Nitroglycerin 0.4 MG/ACTUAT Mucosal Spray",
+    "857005": "Acetaminophen 325 MG / HYDROcodone Bitartrate 7.5 MG Oral Tablet",
+    "1664463": "24 HR tacrolimus 1 MG Extended Release Oral Tablet [Envarsus]",
+    "243670": "aspirin 81 MG Oral Tablet",
+    "896758": "labetalol hydrochloride 100 MG Oral Tablet",
+    "259255": "atorvastatin 80 MG Oral Tablet",
+    "198188": "ramipril 2.5 MG Oral Capsule",
+    "855812": "prasugrel 10 MG Oral Tablet",
+    "562251": "Amoxicillin 250 MG / Clavulanate 125 MG Oral Tablet"
+  }
+}
