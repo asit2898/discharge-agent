@@ -1,0 +1,1970 @@
+{
+ "id": "hero::georgine-boyle-discharge",
+ "metadata": {
+  "patient_id": "af3703ed-104a-f527-22f0-48313fea6f88",
+  "encounter_id": "hero-enc-1",
+  "mrn": "MRN 30291847",
+  "date": "2026-07-17T11:00:00-07:00",
+  "status": "finished",
+  "visit_type": "Inpatient discharge (multi-specialist)",
+  "visit_title": "Inpatient discharge \u2014 hip fracture ORIF with new AF and UTI",
+  "teams": [
+   "Hospitalist",
+   "Orthopedic Surgery",
+   "Cardiology",
+   "Infectious Disease"
+  ],
+  "substrate": "real Synthea chart (Georgine Boyle) + planted discharge discrepancies",
+  "is_hero": true
+ },
+ "patient_context": {
+  "patient": {
+   "resourceType": "Patient",
+   "id": "af3703ed-104a-f527-22f0-48313fea6f88",
+   "name": [
+    {
+     "given": [
+      "Georgine"
+     ],
+     "family": "Boyle"
+    }
+   ],
+   "gender": "female",
+   "birthDate": "1951-09-26",
+   "address": [
+    {
+     "city": "Lawrence",
+     "state": "MA"
+    }
+   ]
+  },
+  "longitudinal_summary": {
+   "resource_counts": {
+    "Condition": 16,
+    "MedicationRequest": 17,
+    "Observation": 14,
+    "AllergyIntolerance": 1
+   },
+   "condition_labels": [
+    "Anemia (disorder)",
+    "Body mass index 30+ - obesity (finding)",
+    "Essential hypertension (disorder)",
+    "Metabolic syndrome X (disorder)",
+    "Diabetes mellitus type 2 (disorder)",
+    "Hypertriglyceridemia (disorder)",
+    "Disorder of kidney due to diabetes mellitus (disorder)",
+    "Chronic kidney disease stage 2 (disorder)",
+    "Microalbuminuria due to type 2 diabetes mellitus (disorder)",
+    "Chronic low back pain (finding)"
+   ],
+   "medication_labels": [],
+   "allergy_labels": [
+    "Penicillin (rash)"
+   ]
+  }
+ },
+ "encounter_fhir": {
+  "encounter": {
+   "resourceType": "Encounter",
+   "id": "hero-enc-1",
+   "status": "finished",
+   "class": {
+    "code": "IMP",
+    "display": "inpatient encounter"
+   },
+   "period": {
+    "start": "2026-07-13T22:10:00-07:00",
+    "end": "2026-07-17T11:00:00-07:00"
+   }
+  },
+  "related_resources": {
+   "Condition": [
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-11db-12acec146ed8",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "271737000",
+        "display": "Anemia (disorder)"
+       }
+      ],
+      "text": "Anemia (disorder)"
+     },
+     "onsetDateTime": "1969-11-19",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-cbc0-1cd22c0eb171",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "162864005",
+        "display": "Body mass index 30+ - obesity (finding)"
+       }
+      ],
+      "text": "Body mass index 30+ - obesity (finding)"
+     },
+     "onsetDateTime": "1991-10-02",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-c368-5408face7724",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "59621000",
+        "display": "Essential hypertension (disorder)"
+       }
+      ],
+      "text": "Essential hypertension (disorder)"
+     },
+     "onsetDateTime": "2001-09-26",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-9f9c-8dc41d41a87b",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "237602007",
+        "display": "Metabolic syndrome X (disorder)"
+       }
+      ],
+      "text": "Metabolic syndrome X (disorder)"
+     },
+     "onsetDateTime": "2001-09-26",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-8271-837b32c5cf5d",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "44054006",
+        "display": "Diabetes mellitus type 2 (disorder)"
+       }
+      ],
+      "text": "Diabetes mellitus type 2 (disorder)"
+     },
+     "onsetDateTime": "2001-09-26",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-9453-dcb4acafea85",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "302870006",
+        "display": "Hypertriglyceridemia (disorder)"
+       }
+      ],
+      "text": "Hypertriglyceridemia (disorder)"
+     },
+     "onsetDateTime": "2002-10-02",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-21c3-13ef4fd098cc",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "127013003",
+        "display": "Disorder of kidney due to diabetes mellitus (disorder)"
+       }
+      ],
+      "text": "Disorder of kidney due to diabetes mellitus (disorder)"
+     },
+     "onsetDateTime": "2003-10-08",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-2de0-bedbd9bc368d",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "431856006",
+        "display": "Chronic kidney disease stage 2 (disorder)"
+       }
+      ],
+      "text": "Chronic kidney disease stage 2 (disorder)"
+     },
+     "onsetDateTime": "2007-03-14",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-44c2-8223ee70b013",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "90781000119102",
+        "display": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+       }
+      ],
+      "text": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+     },
+     "onsetDateTime": "2007-03-14",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "af3703ed-104a-f527-2394-b7249b68f5ac",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "coding": [
+       {
+        "system": "http://snomed.info/sct",
+        "code": "278860009",
+        "display": "Chronic low back pain (finding)"
+       }
+      ],
+      "text": "Chronic low back pain (finding)"
+     },
+     "onsetDateTime": "2014-03-12",
+     "_prov": "real"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "cond-ckd3",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "text": "Chronic kidney disease stage 3 (disorder)"
+     },
+     "onsetDateTime": "2020-04-11",
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "cond-hipfx",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "text": "Fracture of intertrochanteric section of femur (disorder)"
+     },
+     "onsetDateTime": "2026-07-13",
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "cond-afib",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "text": "Atrial fibrillation (disorder)"
+     },
+     "onsetDateTime": "2026-07-14",
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "cond-uti",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "text": "Urinary tract infection (disorder)"
+     },
+     "onsetDateTime": "2026-07-13",
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "cond-aki",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "text": "Acute kidney injury (disorder)"
+     },
+     "onsetDateTime": "2026-07-15",
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "Condition",
+     "id": "cond-hyperk",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "text": "Hyperkalemia (disorder)"
+     },
+     "onsetDateTime": "2026-07-16",
+     "_prov": "injected"
+    }
+   ],
+   "AllergyIntolerance": [
+    {
+     "resourceType": "AllergyIntolerance",
+     "id": "allergy-pcn",
+     "clinicalStatus": {
+      "coding": [
+       {
+        "code": "active"
+       }
+      ]
+     },
+     "code": {
+      "text": "Penicillin"
+     },
+     "reaction": [
+      {
+       "manifestation": [
+        {
+         "text": "Rash"
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    }
+   ],
+   "Observation": [
+    {
+     "resourceType": "Observation",
+     "id": "obs-na-base",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2951-2",
+        "display": "Sodium"
+       }
+      ],
+      "text": "Sodium"
+     },
+     "valueQuantity": {
+      "value": 141,
+      "unit": "mmol/L",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "real",
+     "referenceRange": [
+      {
+       "low": {
+        "value": 136,
+        "unit": "mmol/L"
+       },
+       "high": {
+        "value": 145,
+        "unit": "mmol/L"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-k-base",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium"
+       }
+      ],
+      "text": "Potassium"
+     },
+     "valueQuantity": {
+      "value": 4.3,
+      "unit": "mmol/L",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "real",
+     "referenceRange": [
+      {
+       "low": {
+        "value": 3.5,
+        "unit": "mmol/L"
+       },
+       "high": {
+        "value": 5.1,
+        "unit": "mmol/L"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-cr-base",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2160-0",
+        "display": "Creatinine"
+       }
+      ],
+      "text": "Creatinine"
+     },
+     "valueQuantity": {
+      "value": 1.3,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 0.6,
+        "unit": "mg/dL"
+       },
+       "high": {
+        "value": 1.1,
+        "unit": "mg/dL"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-egfr-base",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "48642-3",
+        "display": "eGFR"
+       }
+      ],
+      "text": "eGFR"
+     },
+     "valueQuantity": {
+      "value": 42,
+      "unit": "mL/min/1.73m2",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "Low (G3a)"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 60,
+        "unit": "mL/min/1.73m2"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-bun-base",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "3094-0",
+        "display": "Urea nitrogen"
+       }
+      ],
+      "text": "Urea nitrogen"
+     },
+     "valueQuantity": {
+      "value": 26,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 7,
+        "unit": "mg/dL"
+       },
+       "high": {
+        "value": 20,
+        "unit": "mg/dL"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-glu-base",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2345-7",
+        "display": "Glucose"
+       }
+      ],
+      "text": "Glucose"
+     },
+     "valueQuantity": {
+      "value": 158,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 70,
+        "unit": "mg/dL"
+       },
+       "high": {
+        "value": 99,
+        "unit": "mg/dL"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-a1c",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "4548-4",
+        "display": "Hemoglobin A1c"
+       }
+      ],
+      "text": "Hemoglobin A1c"
+     },
+     "valueQuantity": {
+      "value": 7.8,
+      "unit": "%",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "high": {
+        "value": 5.7,
+        "unit": "%"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-hgb",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "718-7",
+        "display": "Hemoglobin"
+       }
+      ],
+      "text": "Hemoglobin"
+     },
+     "valueQuantity": {
+      "value": 10.9,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-06-03T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "Low"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 12.0,
+        "unit": "g/dL"
+       },
+       "high": {
+        "value": 15.5,
+        "unit": "g/dL"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-cr-d1",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2160-0",
+        "display": "Creatinine"
+       }
+      ],
+      "text": "Creatinine"
+     },
+     "valueQuantity": {
+      "value": 1.7,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-07-14T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 0.6,
+        "unit": "mg/dL"
+       },
+       "high": {
+        "value": 1.1,
+        "unit": "mg/dL"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-egfr-d1",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "48642-3",
+        "display": "eGFR"
+       }
+      ],
+      "text": "eGFR"
+     },
+     "valueQuantity": {
+      "value": 31,
+      "unit": "mL/min/1.73m2",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-07-14T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "Low"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 60,
+        "unit": "mL/min/1.73m2"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-cr-d2",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2160-0",
+        "display": "Creatinine"
+       }
+      ],
+      "text": "Creatinine"
+     },
+     "valueQuantity": {
+      "value": 2.1,
+      "unit": "mg/dL",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-07-15T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 0.6,
+        "unit": "mg/dL"
+       },
+       "high": {
+        "value": 1.1,
+        "unit": "mg/dL"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-egfr-d2",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "48642-3",
+        "display": "eGFR"
+       }
+      ],
+      "text": "eGFR"
+     },
+     "valueQuantity": {
+      "value": 24,
+      "unit": "mL/min/1.73m2",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-07-15T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "Low (AKI)"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 60,
+        "unit": "mL/min/1.73m2"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-k-d2",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium"
+       }
+      ],
+      "text": "Potassium"
+     },
+     "valueQuantity": {
+      "value": 5.2,
+      "unit": "mmol/L",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-07-15T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 3.5,
+        "unit": "mmol/L"
+       },
+       "high": {
+        "value": 5.1,
+        "unit": "mmol/L"
+       }
+      }
+     ]
+    },
+    {
+     "resourceType": "Observation",
+     "id": "obs-k-high",
+     "status": "final",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+         "code": "laboratory"
+        }
+       ]
+      }
+     ],
+     "code": {
+      "coding": [
+       {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium"
+       }
+      ],
+      "text": "Potassium"
+     },
+     "valueQuantity": {
+      "value": 5.8,
+      "unit": "mmol/L",
+      "system": "http://unitsofmeasure.org"
+     },
+     "effectiveDateTime": "2026-07-16T07:00:00-07:00",
+     "_prov": "injected",
+     "interpretation": [
+      {
+       "text": "High"
+      }
+     ],
+     "referenceRange": [
+      {
+       "low": {
+        "value": 3.5,
+        "unit": "mmol/L"
+       },
+       "high": {
+        "value": 5.1,
+        "unit": "mmol/L"
+       }
+      }
+     ]
+    }
+   ],
+   "MedicationRequest": [
+    {
+     "resourceType": "MedicationRequest",
+     "id": "af3703ed-104a-f527-f775-6d973fa59fdf",
+     "status": "active",
+     "intent": "order",
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "106892",
+        "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
+       }
+      ],
+      "text": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
+     },
+     "authoredOn": "2025-11-01T09:00:00-07:00",
+     "_prov": "real",
+     "category": [
+      {
+       "coding": [
+        {
+         "code": "community"
+        }
+       ],
+       "text": "Community"
+      }
+     ],
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000000",
+      "display": "Dr. Lin (PCP)"
+     },
+     "dosageInstruction": [
+      {
+       "text": ""
+      }
+     ]
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "af3703ed-104a-f527-7668-1644564dc73c",
+     "status": "active",
+     "intent": "order",
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "835603",
+        "display": "tramadol hydrochloride 50 MG Oral Tablet"
+       }
+      ],
+      "text": "tramadol hydrochloride 50 MG Oral Tablet"
+     },
+     "authoredOn": "2025-11-01T09:00:00-07:00",
+     "_prov": "real",
+     "category": [
+      {
+       "coding": [
+        {
+         "code": "community"
+        }
+       ],
+       "text": "Community"
+      }
+     ],
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000000",
+      "display": "Dr. Lin (PCP)"
+     },
+     "dosageInstruction": [
+      {
+       "text": ""
+      }
+     ]
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "af3703ed-104a-f527-543f-2031246dee90",
+     "status": "active",
+     "intent": "order",
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "860975",
+        "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+       }
+      ],
+      "text": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+     },
+     "authoredOn": "2025-11-01T09:00:00-07:00",
+     "_prov": "real",
+     "category": [
+      {
+       "coding": [
+        {
+         "code": "community"
+        }
+       ],
+       "text": "Community"
+      }
+     ],
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000000",
+      "display": "Dr. Lin (PCP)"
+     },
+     "dosageInstruction": [
+      {
+       "text": ""
+      }
+     ]
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "af3703ed-104a-f527-fe00-1085e0b67788",
+     "status": "active",
+     "intent": "order",
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "308136",
+        "display": "amLODIPine 2.5 MG Oral Tablet"
+       }
+      ],
+      "text": "amLODIPine 2.5 MG Oral Tablet"
+     },
+     "authoredOn": "2025-11-01T09:00:00-07:00",
+     "_prov": "real",
+     "category": [
+      {
+       "coding": [
+        {
+         "code": "community"
+        }
+       ],
+       "text": "Community"
+      }
+     ],
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000000",
+      "display": "Dr. Lin (PCP)"
+     },
+     "dosageInstruction": [
+      {
+       "text": ""
+      }
+     ]
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-ampsulbactam",
+     "status": "stopped",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "inpatient",
+         "display": "Inpatient"
+        }
+       ],
+       "text": "Inpatient"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "1659598",
+        "display": "ampicillin 2000 MG / sulbactam 1000 MG Injection"
+       }
+      ],
+      "text": "Ampicillin-sulbactam 3 g IV"
+     },
+     "authoredOn": "2026-07-13T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000004",
+      "display": "Dr. Reyes (Infectious Disease)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "3 g IV every 6 hours",
+       "route": {
+        "text": "IV"
+       },
+       "timing": {
+        "code": {
+         "text": "every 6 hours"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 3,
+          "unit": "g"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-ivfluids",
+     "status": "stopped",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "inpatient",
+         "display": "Inpatient"
+        }
+       ],
+       "text": "Inpatient"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "313002",
+        "display": "0.9 % Sodium Chloride Injectable Solution"
+       }
+      ],
+      "text": "Sodium chloride 0.9% 1000 mL IV"
+     },
+     "authoredOn": "2026-07-13T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000001",
+      "display": "Dr. Chen (Hospitalist)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "1000 mL IV at 75 mL/hr",
+       "route": {
+        "text": "IV"
+       },
+       "timing": {
+        "code": {
+         "text": "at 75 mL/hr"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 1000,
+          "unit": "mL"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-pantoprazole",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "inpatient",
+         "display": "Inpatient"
+        }
+       ],
+       "text": "Inpatient"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "314200",
+        "display": "pantoprazole 40 MG Delayed Release Oral Tablet"
+       }
+      ],
+      "text": "Pantoprazole 40 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-13T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000001",
+      "display": "Dr. Chen (Hospitalist)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "40 mg PO daily",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "daily"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 40,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-docusate",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "inpatient",
+         "display": "Inpatient"
+        }
+       ],
+       "text": "Inpatient"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "1115005",
+        "display": "docusate sodium 100 MG Oral Capsule"
+       }
+      ],
+      "text": "Docusate sodium 100 mg Oral Capsule"
+     },
+     "authoredOn": "2026-07-13T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000001",
+      "display": "Dr. Chen (Hospitalist)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "100 mg PO twice daily",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "twice daily"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 100,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-ondansetron",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "inpatient",
+         "display": "Inpatient"
+        }
+       ],
+       "text": "Inpatient"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "198052",
+        "display": "ondansetron 4 MG Oral Tablet"
+       }
+      ],
+      "text": "Ondansetron 4 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-14T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000001",
+      "display": "Dr. Chen (Hospitalist)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "4 mg IV every 8 hours PRN nausea",
+       "route": {
+        "text": "IV"
+       },
+       "timing": {
+        "code": {
+         "text": "every 8 hours PRN nausea"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 4,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-apixaban",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "1364445",
+        "display": "apixaban 5 MG Oral Tablet"
+       }
+      ],
+      "text": "Apixaban 5 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-14T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000003",
+      "display": "Dr. Patel (Cardiology)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "5 mg PO twice daily",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "twice daily"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 5,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-enoxaparin",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "854235",
+        "display": "0.4 ML enoxaparin sodium 100 MG/ML Prefilled Syringe"
+       }
+      ],
+      "text": "Enoxaparin 40 mg/0.4 mL SC Injection"
+     },
+     "authoredOn": "2026-07-13T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000002",
+      "display": "Dr. Okafor (Orthopedic Surgery)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "40 mg SC daily",
+       "route": {
+        "text": "SC"
+       },
+       "timing": {
+        "code": {
+         "text": "daily"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 40,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-ibuprofen",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "197806",
+        "display": "ibuprofen 600 MG Oral Tablet"
+       }
+      ],
+      "text": "Ibuprofen 600 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-15T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000002",
+      "display": "Dr. Okafor (Orthopedic Surgery)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "600 mg PO three times daily PRN",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "three times daily PRN"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 600,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-aspirin",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "308416",
+        "display": "aspirin 81 MG Delayed Release Oral Tablet"
+       }
+      ],
+      "text": "Aspirin 81 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-14T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000003",
+      "display": "Dr. Patel (Cardiology)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "81 mg PO daily",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "daily"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 81,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-amlodipine-dup",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "197361",
+        "display": "amlodipine 5 MG Oral Tablet"
+       }
+      ],
+      "text": "amLODIPine 5 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-15T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000001",
+      "display": "Dr. Chen (Hospitalist)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "5 mg PO twice daily",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "twice daily"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 5,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-cephalexin",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "309114",
+        "display": "cephalexin 500 MG Oral Capsule"
+       }
+      ],
+      "text": "Cephalexin 500 mg Oral Capsule"
+     },
+     "authoredOn": "2026-07-16T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000004",
+      "display": "Dr. Reyes (Infectious Disease)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "500 mg PO every 6 hours",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "every 6 hours"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 500,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-oxycodone",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "1049621",
+        "display": "oxycodone hydrochloride 5 MG Oral Tablet"
+       }
+      ],
+      "text": "Oxycodone 5 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-13T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000002",
+      "display": "Dr. Okafor (Orthopedic Surgery)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "5 mg PO every 4 hours PRN pain",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "every 4 hours PRN pain"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 5,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    },
+    {
+     "resourceType": "MedicationRequest",
+     "id": "mr-acetaminophen",
+     "status": "active",
+     "intent": "order",
+     "category": [
+      {
+       "coding": [
+        {
+         "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+         "code": "discharge",
+         "display": "Discharge"
+        }
+       ],
+       "text": "Discharge"
+      }
+     ],
+     "medicationCodeableConcept": {
+      "coding": [
+       {
+        "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+        "code": "198444",
+        "display": "acetaminophen 650 MG Oral Tablet"
+       }
+      ],
+      "text": "Acetaminophen 650 mg Oral Tablet"
+     },
+     "authoredOn": "2026-07-13T09:00:00-07:00",
+     "requester": {
+      "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|1990000002",
+      "display": "Dr. Okafor (Orthopedic Surgery)"
+     },
+     "dosageInstruction": [
+      {
+       "text": "650 mg PO every 6 hours PRN",
+       "route": {
+        "text": "PO"
+       },
+       "timing": {
+        "code": {
+         "text": "every 6 hours PRN"
+        }
+       },
+       "doseAndRate": [
+        {
+         "doseQuantity": {
+          "value": 650,
+          "unit": "mg"
+         }
+        }
+       ]
+      }
+     ],
+     "_prov": "injected"
+    }
+   ]
+  }
+ },
+ "transcript": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 DAY 0 \u2014 2026-07-13 \u00b7 Admission (ED \u2192 Ortho, ID) \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nNURSE: Okay, Georgine, we're just going to get you settled. Can you tell me what happened?\nPT: I got up in the night and my leg just... went out from under me. It hurts something awful.\nDR. OKAFOR (Orthopedic Surgery): The X-ray confirms it \u2014 an intertrochanteric fracture of\nthe right hip. We'll take her to the OR today for the repair. Let's start DVT prophylaxis,\nenoxaparin 40 subcutaneous daily, and she can have oxycodone for pain.\nPT: Am I going to be able to walk again after this?\nDR. OKAFOR: You will \u2014 we'll have you up with therapy as soon as tomorrow.\nDR. REYES (Infectious Disease): Her urine's looking like an infection and she spiked a\nfever in the ED. We started her on ampicillin-sulbactam empirically the night she came in febrile. We'll narrow it once the culture comes back.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 DAY 1 \u2014 2026-07-14 \u00b7 Post-op \u00b7 Cardiology consult \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nDR. PATEL (Cardiology): So the surgery went fine, but her heart's been flipping in and out\nof atrial fibrillation since she came out of the OR \u2014 that's new for her. I've started her\non apixaban, five milligrams twice a day, to protect against stroke. Now that she's therapeutic on the apixaban, we can stop the Lovenox \u2014 she doesn't need both.\nNURSE: Got it \u2014 so discontinue the Lovenox.\nDR. PATEL: Right. And Let's hold her baby aspirin while she's on the apixaban \u2014 no need to stack the bleeding risk without a stent indication.\nDR. PATEL: One more \u2014 Start her on metoprolol 25 twice a day for rate control, and her PCP can titrate up as needed.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 DAY 2 \u2014 2026-07-15 \u00b7 Hospitalist rounds \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nDR. CHEN (Hospitalist): Morning, Georgine. I want to go over a few things. Her kidneys took a real hit \u2014 her eGFR is down around 24 now, so hold anything renally cleared.\nDR. CHEN: Her blood pressure's been stubborn even after surgery. Her pressures are still running high, so let's add amlodipine 5 twice daily.\nDR. CHEN: Her ankles are pretty swollen \u2014 has she always had that? It's been getting worse this week.\nDAUGHTER: They've been a bit puffy for maybe a week or two, I think, but it's worse now.\nDR. CHEN: Good to know. And she's never had diabetes, right? Nothing like that in her history.\nPT: No, I don't think so.\nDR. OKAFOR (Orthopedic Surgery): Hip incision looks clean. Keep the oxycodone for breakthrough pain, and add ibuprofen 600 three times a day for the swelling.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 DAY 3 \u2014 2026-07-16 \u00b7 Hospitalist + ID \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nDR. CHEN (Hospitalist): Her potassium came back at 5.8 this morning; let's just recheck it as an outpatient.\nDR. REYES (Infectious Disease): Culture's back. Urine culture's sensitive to cephalexin. Seven days total \u2014 she'll finish it on Saturday, then it stops.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 DAY 4 \u2014 2026-07-17 \u00b7 Discharge planning \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nDR. OKAFOR (Orthopedic Surgery): Hip's healing well \u2014 weight-bearing as tolerated, and\nshe'll continue with home physical therapy.\nDR. CHEN (Hospitalist): Alright, let's get her medication list reconciled and the\nafter-visit summary printed so she can head home.\n",
+ "note": "# Discharge Summary \u2014 Georgine Boyle, 74F   (2026-07-13 \u2192 2026-07-17)\n\n## Problem List (real chart + this admission)\nEssential hypertension \u00b7 Type 2 diabetes mellitus \u00b7 Chronic kidney disease \u00b7 Metabolic\nsyndrome \u00b7 Obesity \u00b7 Chronic low back pain \u00b7 Right intertrochanteric hip fracture (ORIF)\n\u00b7 New-onset atrial fibrillation \u00b7 UTI \u00b7 Post-op acute kidney injury (eGFR nadir 24) \u00b7\nHyperkalemia (K 5.8).\n\n## Hospital Course\nAdmitted after a mechanical fall. ORIF by Orthopedics (Dr. Okafor). New AF managed by\nCardiology (Dr. Patel); UTI by Infectious Disease (Dr. Reyes); AKI and hyperkalemia by\nHospitalist (Dr. Chen). Four teams contributed medication orders across the stay.\n\n## Discharge Disposition\nHome with home health. Medication reconciliation pending \u2014 orders span four prescribers\nand multiple days; several require a decision.\n",
+ "after_visit_summary": "## Your medicines \u2014 what changed and why\nYour care team is finalizing your medication list, reconciling orders from your surgery,\nheart, kidney, and infection teams before you go home.\n",
+ "after_visit_summary_provenance": {
+  "source": "hand-authored on real Synthea substrate"
+ }
+}

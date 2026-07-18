@@ -1,0 +1,446 @@
+{
+ "source": "synthea-sample-fhir-latest",
+ "patient": {
+  "resourceType": "Patient",
+  "id": "af3703ed-104a-f527-22f0-48313fea6f88",
+  "name": [
+   {
+    "given": [
+     "Georgine"
+    ],
+    "family": "Boyle"
+   }
+  ],
+  "gender": "female",
+  "birthDate": "1951-09-26",
+  "address": [
+   {
+    "city": "Lawrence",
+    "state": "MA"
+   }
+  ]
+ },
+ "conditions": [
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-11db-12acec146ed8",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "271737000",
+      "display": "Anemia (disorder)"
+     }
+    ],
+    "text": "Anemia (disorder)"
+   },
+   "onsetDateTime": "1969-11-19",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-cbc0-1cd22c0eb171",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "162864005",
+      "display": "Body mass index 30+ - obesity (finding)"
+     }
+    ],
+    "text": "Body mass index 30+ - obesity (finding)"
+   },
+   "onsetDateTime": "1991-10-02",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-c368-5408face7724",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "59621000",
+      "display": "Essential hypertension (disorder)"
+     }
+    ],
+    "text": "Essential hypertension (disorder)"
+   },
+   "onsetDateTime": "2001-09-26",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-9f9c-8dc41d41a87b",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "237602007",
+      "display": "Metabolic syndrome X (disorder)"
+     }
+    ],
+    "text": "Metabolic syndrome X (disorder)"
+   },
+   "onsetDateTime": "2001-09-26",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-8271-837b32c5cf5d",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "44054006",
+      "display": "Diabetes mellitus type 2 (disorder)"
+     }
+    ],
+    "text": "Diabetes mellitus type 2 (disorder)"
+   },
+   "onsetDateTime": "2001-09-26",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-9453-dcb4acafea85",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "302870006",
+      "display": "Hypertriglyceridemia (disorder)"
+     }
+    ],
+    "text": "Hypertriglyceridemia (disorder)"
+   },
+   "onsetDateTime": "2002-10-02",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-21c3-13ef4fd098cc",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "127013003",
+      "display": "Disorder of kidney due to diabetes mellitus (disorder)"
+     }
+    ],
+    "text": "Disorder of kidney due to diabetes mellitus (disorder)"
+   },
+   "onsetDateTime": "2003-10-08",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-2de0-bedbd9bc368d",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "431856006",
+      "display": "Chronic kidney disease stage 2 (disorder)"
+     }
+    ],
+    "text": "Chronic kidney disease stage 2 (disorder)"
+   },
+   "onsetDateTime": "2007-03-14",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-44c2-8223ee70b013",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "90781000119102",
+      "display": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+     }
+    ],
+    "text": "Microalbuminuria due to type 2 diabetes mellitus (disorder)"
+   },
+   "onsetDateTime": "2007-03-14",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Condition",
+   "id": "af3703ed-104a-f527-2394-b7249b68f5ac",
+   "clinicalStatus": {
+    "coding": [
+     {
+      "code": "active"
+     }
+    ]
+   },
+   "code": {
+    "coding": [
+     {
+      "system": "http://snomed.info/sct",
+      "code": "278860009",
+      "display": "Chronic low back pain (finding)"
+     }
+    ],
+    "text": "Chronic low back pain (finding)"
+   },
+   "onsetDateTime": "2014-03-12",
+   "_prov": "real"
+  }
+ ],
+ "home_medications": [
+  {
+   "resourceType": "MedicationRequest",
+   "id": "af3703ed-104a-f527-f775-6d973fa59fdf",
+   "status": "active",
+   "intent": "order",
+   "medicationCodeableConcept": {
+    "coding": [
+     {
+      "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+      "code": "106892",
+      "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
+     }
+    ],
+    "text": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin]"
+   },
+   "authoredOn": "2026-06-03",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "MedicationRequest",
+   "id": "af3703ed-104a-f527-7668-1644564dc73c",
+   "status": "active",
+   "intent": "order",
+   "medicationCodeableConcept": {
+    "coding": [
+     {
+      "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+      "code": "835603",
+      "display": "tramadol hydrochloride 50 MG Oral Tablet"
+     }
+    ],
+    "text": "tramadol hydrochloride 50 MG Oral Tablet"
+   },
+   "authoredOn": "2026-06-03",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "MedicationRequest",
+   "id": "af3703ed-104a-f527-543f-2031246dee90",
+   "status": "active",
+   "intent": "order",
+   "medicationCodeableConcept": {
+    "coding": [
+     {
+      "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+      "code": "860975",
+      "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+     }
+    ],
+    "text": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet"
+   },
+   "authoredOn": "2026-06-03",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "MedicationRequest",
+   "id": "af3703ed-104a-f527-fe00-1085e0b67788",
+   "status": "active",
+   "intent": "order",
+   "medicationCodeableConcept": {
+    "coding": [
+     {
+      "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+      "code": "308136",
+      "display": "amLODIPine 2.5 MG Oral Tablet"
+     }
+    ],
+    "text": "amLODIPine 2.5 MG Oral Tablet"
+   },
+   "authoredOn": "2026-06-03",
+   "_prov": "real"
+  }
+ ],
+ "baseline_labs": [
+  {
+   "resourceType": "Observation",
+   "id": "af3703ed-104a-f527-d0c3-a3c3d8468b42",
+   "status": "final",
+   "code": {
+    "coding": [
+     {
+      "system": "http://loinc.org",
+      "code": "2160-0",
+      "display": "Creatinine [Mass/volume] in Serum or Plasma"
+     }
+    ],
+    "text": "Creatinine [Mass/volume] in Serum or Plasma"
+   },
+   "valueQuantity": {
+    "value": 1.945,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+   },
+   "effectiveDateTime": "2016-07-20",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Observation",
+   "id": "af3703ed-104a-f527-71ef-52ca013b4c2a",
+   "status": "final",
+   "code": {
+    "coding": [
+     {
+      "system": "http://loinc.org",
+      "code": "2951-2",
+      "display": "Sodium [Moles/volume] in Serum or Plasma"
+     }
+    ],
+    "text": "Sodium [Moles/volume] in Serum or Plasma"
+   },
+   "valueQuantity": {
+    "value": 141.79,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+   },
+   "effectiveDateTime": "2016-07-20",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Observation",
+   "id": "af3703ed-104a-f527-c8d5-0f0c7ba1b46c",
+   "status": "final",
+   "code": {
+    "coding": [
+     {
+      "system": "http://loinc.org",
+      "code": "2823-3",
+      "display": "Potassium [Moles/volume] in Serum or Plasma"
+     }
+    ],
+    "text": "Potassium [Moles/volume] in Serum or Plasma"
+   },
+   "valueQuantity": {
+    "value": 4.34,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+   },
+   "effectiveDateTime": "2016-07-20",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Observation",
+   "id": "af3703ed-104a-f527-a803-fe61f6b89e24",
+   "status": "final",
+   "code": {
+    "coding": [
+     {
+      "system": "http://loinc.org",
+      "code": "33914-3",
+      "display": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
+     }
+    ],
+    "text": "Glomerular filtration rate [Volume Rate/Area] in Serum or Plasma by Creatinine-based formula (MDRD)/1.73 sq M"
+   },
+   "valueQuantity": {
+    "value": 73.008,
+    "unit": "mL/min/{1.73_m2}",
+    "system": "http://unitsofmeasure.org",
+    "code": "mL/min/{1.73_m2}"
+   },
+   "effectiveDateTime": "2016-07-20",
+   "_prov": "real"
+  },
+  {
+   "resourceType": "Observation",
+   "id": "af3703ed-104a-f527-2336-cca4dedd7cb1",
+   "status": "final",
+   "code": {
+    "coding": [
+     {
+      "system": "http://loinc.org",
+      "code": "4548-4",
+      "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+     }
+    ],
+    "text": "Hemoglobin A1c/Hemoglobin.total in Blood"
+   },
+   "valueQuantity": {
+    "value": 2.83,
+    "unit": "%",
+    "system": "http://unitsofmeasure.org",
+    "code": "%"
+   },
+   "effectiveDateTime": "2016-07-20",
+   "_prov": "real"
+  }
+ ]
+}

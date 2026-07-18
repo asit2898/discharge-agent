@@ -11,7 +11,8 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import config, hero
+from . import config, engine, hero
+from .chart_view import extract_labs, extract_problems
 from .engine import reconcile
 from .loader import compute_age, get_record, is_inpatient, load_records
 from .normalize import normalize_meds
@@ -32,17 +33,25 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+def _prewarm() -> None:
+    """Warm the hero reconciliation in a background thread so the first UI load is
+    instant even when the full LLM loop (extractor + verifiers) is live."""
+    import threading
+
+    threading.Thread(target=lambda: reconcile(hero.HERO_ID), daemon=True).start()
+
+
 @app.get("/api/health")
 def health() -> dict:
-    return {"status": "ok", "records_loaded": len(load_records())}
+    return {"status": "ok", "records_loaded": len(load_records()), "engine": engine.engine_status()}
 
 
 @app.get("/api/encounters", response_model=list[EncounterSummary])
 def list_encounters() -> list[EncounterSummary]:
     out: list[EncounterSummary] = []
 
-    # Hero first — the demo star.
-    hrecon = hero.hero_reconciliation()
+    # Hero first — the demo star. Count is DERIVED by the engine, not read from labels.
     hdetail = hero.hero_detail()
     out.append(
         EncounterSummary(
@@ -54,8 +63,8 @@ def list_encounters() -> list[EncounterSummary]:
             gender=hdetail.header.gender,
             age=hdetail.header.age,
             is_inpatient=True,
-            med_count=len(hrecon.draft_meds),
-            flag_count=hrecon.stats.flag_count,
+            med_count=len(hdetail.meds),
+            flag_count=engine.deterministic_flag_count(hero.HERO_ID),
             is_hero=True,
         )
     )
@@ -108,19 +117,25 @@ def _patient_header(rec: dict) -> PatientHeader:
 @app.get("/api/encounters/{record_id}", response_model=EncounterDetail)
 def get_encounter(record_id: str) -> EncounterDetail:
     if record_id == hero.HERO_ID:
-        return hero.hero_detail()
-    rec = get_record(record_id)
-    if rec is None:
-        raise HTTPException(status_code=404, detail="encounter not found")
-    return EncounterDetail(
-        id=record_id,
-        header=_patient_header(rec),
-        metadata=rec.get("metadata", {}),
-        transcript=rec.get("transcript", ""),
-        note=rec.get("note", ""),
-        after_visit_summary=rec.get("after_visit_summary", ""),
-        meds=normalize_meds(rec),
-    )
+        detail = hero.hero_detail()
+        rec = hero.hero_record()
+    else:
+        rec = get_record(record_id)
+        if rec is None:
+            raise HTTPException(status_code=404, detail="encounter not found")
+        detail = EncounterDetail(
+            id=record_id,
+            header=_patient_header(rec),
+            metadata=rec.get("metadata", {}),
+            transcript=rec.get("transcript", ""),
+            note=rec.get("note", ""),
+            after_visit_summary=rec.get("after_visit_summary", ""),
+            meds=normalize_meds(rec),
+        )
+    # Problem List + Results Review flowsheet (Epic activities).
+    detail.problems = extract_problems(rec)
+    detail.labs = extract_labs(rec)
+    return detail
 
 
 @app.get("/api/encounters/{record_id}/reconcile", response_model=Reconciliation)
