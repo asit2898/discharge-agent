@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
+*.egg-info/
 .venv/
 venv/
 env/
@@ -21,3 +22,11 @@ build/
 .vscode/
 .idea/
 *.swp
+
+# Data — large / regenerable (keep out of git)
+# (git does NOT support inline comments — patterns must be alone on the line)
+# 1.3 GB Synthea jar + generated FHIR populations (regen via docs/data-pipeline-notes.md)
+data/synthea/
+*.jar
+# ~2 MB full array; keep the canonical .jsonl + labels + summary instead
+data/discrepancy-train.json

@@ -1,0 +1,820 @@
+{
+ "name": "discrepancy-train",
+ "records": 100,
+ "patients": 100,
+ "synthetic": true,
+ "label_distribution": {
+  "dropped_result": 5,
+  "drug_drug_interaction": 12,
+  "drug_condition_conflict": 4,
+  "dropped_home_med": 10,
+  "adverse_drug_event": 10,
+  "duplicate_therapy": 8,
+  "renal_dose_conflict": 10,
+  "control": 22,
+  "drug_allergy_conflict": 11,
+  "history_mismatch": 8
+ },
+ "index": [
+  {
+   "id": "67903dee-eb3e-980e-d08c-5df55f4e005c::6726a722-5614-37d1-2c26-feadd86d624e",
+   "date": "2026-06-25",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_result"
+  },
+  {
+   "id": "c8da8430-2d13-0c5c-9350-8ba41671574a::ec5005e8-f731-0bc2-81fc-5ea781b7205a",
+   "date": "2026-03-11",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_result"
+  },
+  {
+   "id": "8de7a9db-8ff1-0b2e-0419-46a72c14c861::f9a4ae96-e99b-61ef-84b5-dc623df087c6",
+   "date": "2026-05-18",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "a13c3757-e2e6-6196-41df-5b157fc489ac::8df61b5c-2a85-9cd8-dc1f-4ee12e6a864e",
+   "date": "2026-04-27",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_result"
+  },
+  {
+   "id": "bfdac734-6518-29b4-ec18-34a1a7229e89::b2e07637-efcf-2d8e-cbb4-5540c255c9a3",
+   "date": "2026-05-21",
+   "visit_title": "Follow-up visit \u2014 Pregnancy, Hypothyroidism",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_condition_conflict"
+  },
+  {
+   "id": "c4859b72-72fe-e83f-01f4-60a8275570de::16e1b035-eb37-1177-668e-4abc1ba9cb0b",
+   "date": "2026-05-30",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "92adc8c6-c610-ecfe-118c-4528c1277e5f::8cd3a3e6-2175-69d1-aa82-80f44f9275b2",
+   "date": "2026-03-16",
+   "visit_title": "Follow-up visit \u2014 Pregnancy, Hypothyroidism",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_condition_conflict"
+  },
+  {
+   "id": "0e993ed7-572d-9caf-6c7a-f67bb13011d2::5a4d7923-4486-dca0-0984-427a490e91a6",
+   "date": "2026-06-11",
+   "visit_title": "Follow-up visit \u2014 Major depressive disorder, Migraine without aura",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "5dc73f5f-3d00-79ed-96c6-50b2db9f9fa1::0e0016b5-9036-4623-c814-6cf4f33f434f",
+   "date": "2026-03-13",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "c07c666b-29ff-e4e1-8344-6b0a82c8139e::64305d8d-4bef-ad9f-25ed-3f05d2495e14",
+   "date": "2026-05-24",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "59fbc034-c520-564f-fef0-ace6ee6aed1c::09615ab2-24ab-2703-4e08-4bf5c8dc79f3",
+   "date": "2026-05-09",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "a254e9da-07cd-f60b-c3be-d47c10c76371::abeb6b96-a75f-d274-c070-e23b88908a1f",
+   "date": "2026-04-06",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "4ddd486b-19f4-6e80-e481-a9529e2ef7bf::a9195109-0f8f-7e02-4f13-038b2c18bcd2",
+   "date": "2026-03-10",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "fb199cef-b6f9-0913-f2fe-4da5446cf7a3::7eaa3a29-f8f4-6b8c-12f2-282aa76d4838",
+   "date": "2026-05-25",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "aa28801d-d8df-f964-ef5a-5d9dc16b394b::d2c028e4-6792-0623-fbbc-456a959537f5",
+   "date": "2026-05-10",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "5f3c94d2-be76-0900-6c92-b04c32a74ab2::6a683f19-1f79-6192-512d-e8b15ff42d58",
+   "date": "2026-03-23",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "e9adcbc6-f0d0-dbbd-1e7b-2eef6e2ef6fc::d8a44226-6a84-03ff-65a7-5314adfba87a",
+   "date": "2026-04-16",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "7b1b32e7-40b4-87e4-6543-62255a76ac21::c2459688-d17e-b32a-1a79-14755889fcdf",
+   "date": "2026-05-04",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "8f8dd86b-6033-88cd-d0ce-d291aa855ef7::88a5fed8-6c3b-a244-d2c3-845ac51bc684",
+   "date": "2026-05-14",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "6a90f522-3e02-3b9b-dc32-45eb508f8ac4::27fc67b5-2442-4bf3-c5de-0c3a92d2edaa",
+   "date": "2026-04-07",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "3d98a432-e153-d99f-5f4b-14a122ff0061::f8a9bbf9-cb5c-362d-dba0-045d414745b0",
+   "date": "2026-05-21",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "cd0092af-dda0-317c-7988-08ea723d46bf::a1a84185-021d-e2f7-4450-ec0ca30c4548",
+   "date": "2026-04-08",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "ae6a5070-7b2e-babe-2b23-d9a4b5e947e7::d7e39261-987e-e94c-a33b-ddf2638cce70",
+   "date": "2026-04-23",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "4285c970-c4ee-0c52-f3a4-cfaa2a54947e::473c5834-640f-72ec-1632-a7a82d7da8e5",
+   "date": "2026-03-10",
+   "visit_title": "Follow-up visit \u2014 Pregnancy, Hypothyroidism",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_condition_conflict"
+  },
+  {
+   "id": "77108fa9-e367-c3dd-abc0-58e170115cc0::b866df62-e9df-d0b7-1ecc-2dcd174e247d",
+   "date": "2026-04-12",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "0e13face-4cbd-4d89-79c1-2e4eaa05d39e::3df5aca2-62ee-ea17-cfc8-9c2561ced33b",
+   "date": "2026-05-05",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "2b00f171-a19c-6037-17ad-37640224e213::b0e25362-e9ca-4c05-1ab7-0b7a66a57f0c",
+   "date": "2026-05-03",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "fd85d25a-843c-2202-366c-b70162086ebd::ef139de9-9861-a9be-42bd-0c94f78a629f",
+   "date": "2026-03-20",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "a1cfd9d9-513f-138a-a45a-508ead6bc601::853d5c6e-1e96-c514-0b25-69642a786506",
+   "date": "2026-04-03",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "644a4bee-0063-9784-9045-8ea61db3044b::6e6bbdf9-4c54-e717-692a-fa8696007f8f",
+   "date": "2026-05-10",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "d3a89619-90cb-e94a-f5f9-2790344a6264::9b35d6dc-7fd4-1525-7887-20672183c0f7",
+   "date": "2026-04-17",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "3bc82c53-56c8-5ef0-4d28-7a81eb9890b8::b7f3ae67-55d2-c50f-63d7-b24fda77651a",
+   "date": "2026-04-21",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "ce60b78e-d112-ab0a-c890-ee48352872ed::fd70eeef-735a-d4e1-ec0c-61f2242cc12e",
+   "date": "2026-05-15",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "f815219a-fbfc-2696-72c0-935485831fac::75bfe2ef-9ec7-5985-cec9-ab23fffe5c51",
+   "date": "2026-04-25",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "2fbf5dd7-f340-38c3-c722-f899f740feea::21d0082c-79be-fef0-7ee9-c2cf223ecadb",
+   "date": "2026-05-27",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "d3d86ae1-5536-81a3-af3e-d82ec7631331::9654ed32-6599-8357-f391-712bfb54db24",
+   "date": "2026-03-17",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "7b0eb5eb-d2ab-65da-e4bb-efad651eda99::e92a5d0c-2b6a-b846-dc63-408dd96badf2",
+   "date": "2026-04-24",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "9c991827-9353-f616-b640-2aba7d4156cb::fdf9f17f-d031-83d2-4a78-e07f941be54e",
+   "date": "2026-04-17",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "621a72bc-80e9-dbad-cb3b-6e5254f5d49d::42ca3c2e-aa66-2955-39a2-4c2b8c03b291",
+   "date": "2026-04-19",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "45ef5207-ea95-c1a6-1ff5-0f8e2fd51427::51f845f5-301d-4459-0c13-f244a7fa810f",
+   "date": "2026-04-25",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_result"
+  },
+  {
+   "id": "2430018e-4fba-c62e-2940-adb37bd94dfd::00514838-e3f7-34a0-f019-63d9d8b50956",
+   "date": "2026-03-23",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "9f7469dd-bacd-692a-36bf-67e255c6ca41::9783f004-b311-334b-f702-4fd1a573ba71",
+   "date": "2026-05-28",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "d56e77fb-d94e-e25a-f546-7a125ee3d95f::4c1f13d8-8169-fbb2-ef90-06fa5445f4b0",
+   "date": "2026-03-22",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "c2778d81-7a85-7ddd-9b0a-1fd0d5e34f01::df2a71a0-8027-4992-a41a-9da72f405717",
+   "date": "2026-05-14",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "001d7249-62af-b752-efd0-2335ba286bc9::046f72d2-1804-8e17-7b45-4fe31d5b7ece",
+   "date": "2026-05-17",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "4a6c0136-43f8-7e95-0e15-d5b933e05ba3::ab062ed4-0707-0e82-6bda-790bcc080dc2",
+   "date": "2026-06-04",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "51e8d021-7831-6273-7d71-138c5d401edb::44e92e33-50ce-f182-8f3d-600fe1fcd22b",
+   "date": "2026-05-26",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "4ddf7309-1e87-afa8-770d-bf99b9ac80ee::87a83203-246a-d49a-c75f-ae0fb20ffbc9",
+   "date": "2026-04-20",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "580bed30-354e-d38c-31bc-18391deaf650::3f185265-8006-bb9e-2114-e06f378e8834",
+   "date": "2026-05-21",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "eb60842c-2bdc-939a-bc50-1398c126531c::b861c174-dea9-bc49-3adf-2041df71d5e8",
+   "date": "2026-03-05",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "9688b871-fd25-1f62-358d-0561d955f814::bf9ee053-50e5-2cfb-4e2c-6bc3c43f1be8",
+   "date": "2026-04-05",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "7c45aedf-36d6-6445-3e1d-bef01c518aa6::3f348e86-51c6-8909-8d81-57f13d59425f",
+   "date": "2026-03-12",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "79217d23-51cc-b7fb-8127-99c996cf6ff0::eee580a2-1667-566c-1927-ba2ade1e9d0f",
+   "date": "2026-04-25",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "cb29e7fd-7e5b-5b23-2403-9f32aba0ae9e::73cddb6a-1a37-d93c-4365-a5fbe7c297d5",
+   "date": "2026-03-28",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "860f0e06-89cc-6b66-018b-3117cdfcd9a0::bd06133f-d0b6-c22b-d738-653aa08f6573",
+   "date": "2026-06-11",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "3b2dca60-4dc4-90c3-eb18-3ecc44305621::21b54548-65ef-cc2b-9f46-ab12db4e2981",
+   "date": "2026-03-14",
+   "visit_title": "Follow-up visit \u2014 Chronic low back pain, Chronic kidney disease stage 3",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "21f19729-16fc-4615-35c8-7631001f4fcb::4fee66b4-a9d6-8786-a11e-626a8257a6a6",
+   "date": "2026-03-17",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "fa782182-9943-29fa-d9d8-e18be3cb0c5f::a33affff-e3d8-c2f9-4089-36af82512066",
+   "date": "2026-04-05",
+   "visit_title": "Follow-up visit \u2014 Major depressive disorder, Migraine without aura",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "a4b75471-38f1-2383-4198-8f6bf3ccfa76::ca6adbd2-e57a-451c-7951-30dd005e22fa",
+   "date": "2026-05-04",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "225d6b81-2374-028d-41eb-98099f7acb63::9125604f-b19f-16ce-8dac-cb54f561fc13",
+   "date": "2026-04-19",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "40c14714-64dd-6c20-4146-9e4527ea951a::b7c29fed-cb5f-43c6-f456-ffc7238e6203",
+   "date": "2026-05-12",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "cf72876c-2f11-e62d-a064-bc6b10dea121::a3b4e366-ae32-784d-1279-33321bfc173c",
+   "date": "2026-04-02",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "duplicate_therapy"
+  },
+  {
+   "id": "f7ebf872-76c9-3069-a911-29d64867b79f::eb770406-d9a1-e1bc-7133-6cace52d45f0",
+   "date": "2026-05-08",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "c49f2390-0c82-72d9-b09e-02d674cbb837::9d345e38-4ffb-8e76-64da-e368ed36a541",
+   "date": "2026-04-15",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "c5f13017-db76-1894-c0b7-fe075e5663ee::a7c885ed-7d1c-b4bb-0322-6b70a705a4ea",
+   "date": "2026-04-04",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "5371b815-1c94-ef06-a876-43512f8afedc::7dd66e24-2975-ae46-a832-a0922c09073b",
+   "date": "2026-04-05",
+   "visit_title": "Follow-up visit \u2014 Major depressive disorder, Migraine without aura",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "17914890-1b8d-b161-faeb-6377dc3851da::ce005257-6b95-f976-b943-36e3c4464ea1",
+   "date": "2026-05-16",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "28410c0e-6eb1-4b32-0da3-8d2af9d63d7b::ee9adb69-3aed-94a7-a20a-035f57c9b9d9",
+   "date": "2026-04-05",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "fda59767-5e99-28cf-3e25-ac5e6c2459cc::7495d15e-1827-d5d3-9706-dc7a347fc676",
+   "date": "2026-05-28",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "2505b0d7-39fe-fdd7-acba-c7808a526f40::9521074a-a96d-e699-4e3f-f09a2a4aceb1",
+   "date": "2026-06-22",
+   "visit_title": "Follow-up visit \u2014 Pregnancy, Hypothyroidism",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_condition_conflict"
+  },
+  {
+   "id": "11940f10-8f90-5c45-9102-755d14fc1515::375005af-f7f5-53ba-b89d-cef4db7fef2b",
+   "date": "2026-06-02",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "005647bb-9d56-a5c5-f07b-7669c38c9711::2f83d570-7097-2738-7c9a-d8b9a53b5564",
+   "date": "2026-06-12",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "2a62fe56-343e-f783-af76-7b03c11e3e42::3ed4944f-27ab-317e-db46-12a4e457c2c1",
+   "date": "2026-04-29",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "bc353c9f-2908-d00d-0be3-5685b359c6be::e3dc4a54-e7bc-44a4-2b9e-86ceb5393261",
+   "date": "2026-06-17",
+   "visit_title": "Follow-up visit \u2014 COPD, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "c86d8f14-b3e0-9900-dc15-762980f9e10a::e8b93759-311f-94d2-8e64-5a9850b302d2",
+   "date": "2026-04-12",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "4b699505-d16e-624e-84de-fe7363519f44::c4190851-5dc2-119d-5dc0-b89295578a51",
+   "date": "2026-06-02",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "eb755f69-5393-3e61-3006-39e4315e7da7::451a26ff-5936-c4cb-0a92-475e55cfad18",
+   "date": "2026-03-10",
+   "visit_title": "Follow-up visit \u2014 Major depressive disorder, Migraine without aura",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "7271457f-c7a7-0280-d3b9-c34a6fb29883::7bdd8098-8131-f2a1-b687-e6f54cc05e5a",
+   "date": "2026-06-04",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "9b07fb0f-3b77-a3c3-a9f4-2a1c51b875b8::f1af6ff2-31db-86eb-2b98-d716c2867243",
+   "date": "2026-06-02",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "706dae2f-2279-ffe9-0372-c1745abaa1e7::1134b458-5984-e3fe-9e75-9e83a9e79403",
+   "date": "2026-04-30",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "4ae409ea-3582-9e86-f6a7-dffb7869a108::e0d5481a-08b4-3269-9495-a4778a1f790d",
+   "date": "2026-03-22",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "94f5544a-3f19-9830-4c4f-4daed05ebdbc::1a57d831-a987-fd5c-edc1-4dfce16ff305",
+   "date": "2026-03-24",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "ed64f364-4745-998c-3da2-f56912cfba37::ec78660a-5d12-45ad-2062-8a5b4b081202",
+   "date": "2026-05-07",
+   "visit_title": "Follow-up visit \u2014 Chronic low back pain, Chronic kidney disease stage 3",
+   "has_discrepancy": false,
+   "has_adverse_event": false,
+   "primary_type": "control"
+  },
+  {
+   "id": "6d022afd-0acf-3433-e235-4553119cd0ed::a8335601-2961-33f5-c84b-630b006b2413",
+   "date": "2026-03-18",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "361df7eb-c14c-3bd1-9b5c-43bb7849904d::6b572dc0-5f4c-8313-6164-7591a132d7a4",
+   "date": "2026-05-28",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "bf8164b5-4003-fddc-f2f3-bf8fa574ffeb::c0da3ee0-13c6-33f8-34fa-db576dd209d5",
+   "date": "2026-04-07",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "2744b389-19b7-5358-c3a0-a752294384e6::cb748afc-d38e-d12c-a0f5-ab6e2a78bd3b",
+   "date": "2026-05-21",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "aab356be-7b6c-0648-96d4-59271a5836c4::4731d5b9-d6cb-3670-469f-d862d6697b54",
+   "date": "2026-05-08",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_result"
+  },
+  {
+   "id": "c59ee5b7-e1d5-4544-4611-cb35348195f5::d71788d4-09c7-a64e-b219-955ea6a296c2",
+   "date": "2026-05-10",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "renal_dose_conflict"
+  },
+  {
+   "id": "9dd6c232-4f44-8b12-dec5-88b20ae6f0bc::80acc076-720f-cbee-cba1-e888676a5ebf",
+   "date": "2026-03-17",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "history_mismatch"
+  },
+  {
+   "id": "6a5bdbd7-e0c1-6000-d3e8-e29198ff2267::f7535627-acff-d1c4-94fc-16fb74e7b188",
+   "date": "2026-06-04",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "83395020-eb0c-c80b-1ce3-cf6d2a63fedb::52b6b54a-5c98-5a33-e3d7-c42b84ebf14a",
+   "date": "2026-06-03",
+   "visit_title": "Follow-up visit \u2014 Recurrent urinary tract infection, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "4ac5fa17-0d2a-5173-ee89-2bdad6553da7::e87fa6cf-1d5c-5913-470c-3d2c40ede43b",
+   "date": "2026-06-18",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Chronic kidney disease stage 4",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "5d8ec991-926c-9920-b8ce-b500de23cdb9::95eed5d4-cc73-e1f3-8ac5-7fcbb45cdf5e",
+   "date": "2026-05-23",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "41c836a6-1100-7a92-29b0-0316e11b0818::25f1750b-bc4b-9338-25ba-451e0eb4227a",
+   "date": "2026-04-30",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": false,
+   "has_adverse_event": true,
+   "primary_type": "adverse_drug_event"
+  },
+  {
+   "id": "637a50e8-e38a-6d44-8c66-974e673de875::d11f37dd-b24f-4cf2-37e6-03d21a4e1a4a",
+   "date": "2026-06-12",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "6990a4f7-72bd-1bab-1234-b72683ffb317::f9aee2bb-08b8-236c-6e14-ba362a04cca9",
+   "date": "2026-06-11",
+   "visit_title": "Follow-up visit \u2014 Coronary artery disease, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_drug_interaction"
+  },
+  {
+   "id": "3b1ad531-41cd-7326-5bac-c8ef39c5a091::ff8e1a25-661b-49cb-6aa8-b8e9db3f8a77",
+   "date": "2026-03-29",
+   "visit_title": "Follow-up visit \u2014 Hypothyroidism, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  },
+  {
+   "id": "97cb2a13-fa6a-878b-1825-c07347d8c0f7::64c5120e-0237-0467-f374-af7a15771368",
+   "date": "2026-05-29",
+   "visit_title": "Follow-up visit \u2014 Type 2 diabetes mellitus, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "drug_allergy_conflict"
+  },
+  {
+   "id": "3f15ee89-e061-719d-03f2-a17eb8091cff::b69c5334-30a9-93f2-0163-d64b7446182c",
+   "date": "2026-06-05",
+   "visit_title": "Follow-up visit \u2014 Atrial fibrillation, Essential hypertension",
+   "has_discrepancy": true,
+   "has_adverse_event": false,
+   "primary_type": "dropped_home_med"
+  }
+ ]
+}
