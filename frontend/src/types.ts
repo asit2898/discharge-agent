@@ -59,6 +59,7 @@ export interface Flag {
   suggested_fix: string
   recommended_resolution: string
   status: ReviewStatus
+  grounding: 'real' | 'injected' | null
 }
 
 export interface ReconStats {
@@ -101,6 +102,26 @@ export interface PatientHeader {
   attending: string | null
 }
 
+export interface Problem {
+  label: string
+  code: string | null
+  system: string | null
+  onset: string | null
+  acute: boolean
+}
+
+export interface LabResult {
+  name: string
+  loinc: string | null
+  value: string
+  unit: string | null
+  when: string | null
+  interpretation: string | null
+  ref_low: number | null
+  ref_high: number | null
+  abnormal: boolean
+}
+
 export interface EncounterDetail {
   id: string
   header: PatientHeader
@@ -109,4 +130,6 @@ export interface EncounterDetail {
   note: string
   after_visit_summary: string
   meds: Med[]
+  problems: Problem[]
+  labs: LabResult[]
 }

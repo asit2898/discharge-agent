@@ -85,6 +85,7 @@ class Flag(BaseModel):
     suggested_fix: str
     recommended_resolution: str          # what we default the disposition to
     status: ReviewStatus = "pending"
+    grounding: Optional[Literal["real", "injected"]] = None  # real Synthea resource vs planted
 
 
 class ReconStats(BaseModel):
@@ -131,6 +132,28 @@ class PatientHeader(BaseModel):
     attending: Optional[str] = None
 
 
+class Problem(BaseModel):
+    """One problem-list entry (Epic Problem List row)."""
+    label: str
+    code: Optional[str] = None
+    system: Optional[str] = None       # ICD-10 / SNOMED
+    onset: Optional[str] = None
+    acute: bool = False                # this-admission vs chronic
+
+
+class LabResult(BaseModel):
+    """One resulted lab component (a cell in Epic's Results Review flowsheet)."""
+    name: str
+    loinc: Optional[str] = None
+    value: str
+    unit: Optional[str] = None
+    when: Optional[str] = None          # YYYY-MM-DD
+    interpretation: Optional[str] = None
+    ref_low: Optional[float] = None
+    ref_high: Optional[float] = None
+    abnormal: bool = False
+
+
 class EncounterDetail(BaseModel):
     id: str
     header: PatientHeader
@@ -139,3 +162,5 @@ class EncounterDetail(BaseModel):
     note: str
     after_visit_summary: str
     meds: list[Med]
+    problems: list[Problem] = []
+    labs: list[LabResult] = []

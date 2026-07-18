@@ -5,17 +5,21 @@ export interface NavStep {
   key: string
   label: string
   state: 'done' | 'current' | 'todo'
+  group: string
   badge?: number
 }
 
+// Grouped under small-caps category headers, matching Epic's Discharge Navigator
+// section list (REVIEW / ORDERS / PATIENT).
 export const DISCHARGE_STEPS: NavStep[] = [
-  { key: 'readiness', label: 'Discharge Readiness', state: 'done' },
-  { key: 'problems', label: 'Problem List Review', state: 'done' },
-  { key: 'medrec', label: 'Medication Reconciliation', state: 'current' },
-  { key: 'orders', label: 'Discharge Orders', state: 'todo' },
-  { key: 'avs', label: 'Patient Instructions (AVS)', state: 'todo' },
-  { key: 'followup', label: 'Follow-up & Referrals', state: 'todo' },
-  { key: 'education', label: 'Patient Education', state: 'todo' },
+  { key: 'readiness', label: 'Discharge Readiness', state: 'done', group: 'Review' },
+  { key: 'problems', label: 'Problem List Review', state: 'done', group: 'Review' },
+  { key: 'medrec', label: 'Med Rec and Orders', state: 'current', group: 'Orders' },
+  { key: 'orders', label: 'Discharge Orders', state: 'todo', group: 'Orders' },
+  { key: 'rx', label: 'Rx Routing', state: 'todo', group: 'Orders' },
+  { key: 'avs', label: 'Patient Instructions (AVS)', state: 'todo', group: 'Patient' },
+  { key: 'followup', label: 'Follow-up & Referrals', state: 'todo', group: 'Patient' },
+  { key: 'education', label: 'Patient Education', state: 'todo', group: 'Patient' },
 ]
 
 export function NavigatorSidebar({
@@ -35,16 +39,19 @@ export function NavigatorSidebar({
       </div>
       {DISCHARGE_STEPS.map((s, i) => {
         const badge = s.key === 'medrec' ? medrecBadge : undefined
+        const firstOfGroup = DISCHARGE_STEPS.findIndex((x) => x.group === s.group) === i
         return (
-          <button
-            key={s.key}
-            className={`nav-step ${s.state} ${active === s.key ? 'active' : ''}`}
-            onClick={() => onSelect(s.key)}
-          >
-            <span className="dot">{s.state === 'done' ? '✓' : i + 1}</span>
-            <span className="nav-label">{s.label}</span>
-            {badge ? <span className="badge">{badge}</span> : null}
-          </button>
+          <div key={s.key}>
+            {firstOfGroup && <div className="nav-group">{s.group}</div>}
+            <button
+              className={`nav-step ${s.state} ${active === s.key ? 'active' : ''}`}
+              onClick={() => onSelect(s.key)}
+            >
+              <span className="dot">{s.state === 'done' ? '✓' : ''}</span>
+              <span className="nav-label">{s.label}</span>
+              {badge ? <span className="badge">{badge}</span> : null}
+            </button>
+          </div>
         )
       })}
     </nav>

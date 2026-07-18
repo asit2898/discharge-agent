@@ -23,7 +23,7 @@ integration story, and the competitive landscape.
 ## Repo layout
 
 - `PROJECT.md` — project brief / pitch
-- `docs/` — engine build plan, ideation, data-pipeline notes
+- `docs/` — ideation, data-pipeline notes
 - `data/` — our own 100-record labeled discrepancy eval set + generators
 - `synthetic-ambient-fhir-25/` — provided Abridge dataset (25 synthetic ambient +
   FHIR encounters) used as the data substrate

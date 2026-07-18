@@ -1,0 +1,297 @@
+{
+ "id": "hero::georgine-boyle-discharge",
+ "has_discrepancy": true,
+ "discrepancies": [
+  {
+   "id": "f1",
+   "type": "renal_dose_conflict",
+   "severity": "high",
+   "med_name": "Metformin",
+   "explanation": "Metformin (her home med) is on the discharge list, but this admission's labs show acute kidney injury with eGFR 24 \u2014 metformin is contraindicated below eGFR 30 (lactic-acidosis risk).",
+   "transcript_evidence": "Her kidneys took a real hit \u2014 her eGFR is down around 24 now, so hold anything renally cleared.",
+   "transcript_speaker": "DR. CHEN (Hospitalist), Day 2",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "af3703ed-104a-f527-543f-2031246dee90",
+    "display": "24 HR Metformin hydrochloride 500 MG Extended Release Oral Tablet \u2014 active; eGFR now 24"
+   },
+   "prescriber": {
+    "name": "Dr. Chen (Hospitalist)",
+    "npi": "1990000001"
+   },
+   "suggested_fix": "Hold metformin; recheck renal function before restarting.",
+   "recommended_resolution": "Hold metformin (eGFR 24 < 30 contraindication).",
+   "status": "pending",
+   "grounding": "real"
+  },
+  {
+   "id": "f2",
+   "type": "dropped_home_med",
+   "severity": "high",
+   "med_name": "insulin",
+   "explanation": "Her home Humulin 70/30 insulin was never carried onto the discharge orders. Silently dropping insulin in a type-2 diabetic risks severe hyperglycemia after discharge.",
+   "transcript_evidence": null,
+   "transcript_speaker": null,
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "af3703ed-104a-f527-f775-6d973fa59fdf",
+    "display": "insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension [Humulin] \u2014 home med, not on discharge orders"
+   },
+   "prescriber": {
+    "name": "Dr. Lin (PCP)",
+    "npi": "1990000000"
+   },
+   "suggested_fix": "Continue home insulin (Humulin 70/30) on the discharge list with a glucose plan.",
+   "recommended_resolution": "Continue insulin (dropping it risks DKA/hyperglycemia).",
+   "status": "pending",
+   "grounding": "real"
+  },
+  {
+   "id": "f3",
+   "type": "adverse_drug_event",
+   "severity": "moderate",
+   "med_name": "amLODIPine",
+   "explanation": "New, worsening ankle swelling with no cardiac cause noted is classic amlodipine-induced peripheral edema. Amlodipine is her home antihypertensive.",
+   "transcript_evidence": "Her ankles are pretty swollen \u2014 has she always had that? It's been getting worse this week.",
+   "transcript_speaker": "DR. CHEN (Hospitalist), Day 2",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "af3703ed-104a-f527-fe00-1085e0b67788",
+    "display": "amLODIPine 2.5 MG Oral Tablet \u2014 active; associated ADR: peripheral edema"
+   },
+   "prescriber": {
+    "name": "Dr. Lin (PCP)",
+    "npi": "1990000000"
+   },
+   "suggested_fix": "Consider the new leg swelling is amlodipine edema; reassess vs. adding a diuretic.",
+   "recommended_resolution": "Evaluate amlodipine as the edema cause (clinician decision).",
+   "status": "pending",
+   "grounding": "real"
+  },
+  {
+   "id": "f4",
+   "type": "renal_dose_conflict",
+   "severity": "moderate",
+   "med_name": "tramadol",
+   "explanation": "Her home tramadol is renally cleared; at eGFR 24 it accumulates and lowers the seizure threshold. It needs dose adjustment or substitution in the AKI setting.",
+   "transcript_evidence": null,
+   "transcript_speaker": null,
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "af3703ed-104a-f527-7668-1644564dc73c",
+    "display": "tramadol hydrochloride 50 MG Oral Tablet \u2014 renally cleared; eGFR 24"
+   },
+   "prescriber": {
+    "name": "Dr. Lin (PCP)",
+    "npi": "1990000000"
+   },
+   "suggested_fix": "Reduce/space tramadol or switch analgesic given eGFR 24 (accumulation + seizure risk).",
+   "recommended_resolution": "Renally dose-adjust tramadol.",
+   "status": "pending",
+   "grounding": "real"
+  },
+  {
+   "id": "f5",
+   "type": "history_mismatch",
+   "severity": "moderate",
+   "med_name": null,
+   "explanation": "Rounds stated she has no diabetes history, but Type 2 diabetes mellitus is an active charted problem and she is on metformin and insulin.",
+   "transcript_evidence": "And she's never had diabetes, right? Nothing like that in her history.",
+   "transcript_speaker": "DR. CHEN (Hospitalist), Day 2",
+   "chart_evidence": {
+    "resource_type": "Condition",
+    "resource_id": "af3703ed-104a-f527-8271-837b32c5cf5d",
+    "display": "Diabetes mellitus type 2 \u2014 active problem"
+   },
+   "prescriber": {
+    "name": "Dr. Chen (Hospitalist)",
+    "npi": "1990000001"
+   },
+   "suggested_fix": "Reconcile the history: T2DM is charted and she is on metformin + insulin.",
+   "recommended_resolution": "Keep charted T2DM; verify with the patient.",
+   "status": "pending",
+   "grounding": "real"
+  },
+  {
+   "id": "f6",
+   "type": "duplicate_therapy",
+   "severity": "moderate",
+   "med_name": "amLODIPine 5",
+   "explanation": "A second amlodipine order (5 mg BID) was added on top of her home amlodipine 2.5 mg \u2014 duplicate therapy of the same drug at a higher combined dose.",
+   "transcript_evidence": "Her pressures are still running high, so let's add amlodipine 5 twice daily.",
+   "transcript_speaker": "DR. CHEN (Hospitalist), Day 2",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "mr-amlodipine-dup",
+    "display": "amLODIPine 5 mg BID \u2014 duplicates home amLODIPine 2.5 MG Oral Tablet (af3703ed-104a-f527-fe00-1085e0b67788)"
+   },
+   "prescriber": {
+    "name": "Dr. Chen (Hospitalist)",
+    "npi": "1990000001"
+   },
+   "suggested_fix": "Do not stack a second amlodipine order; reconcile to a single dose.",
+   "recommended_resolution": "Consolidate to one amlodipine order.",
+   "status": "pending",
+   "grounding": "real"
+  },
+  {
+   "id": "f7",
+   "type": "cross_prescriber_conflict",
+   "severity": "high",
+   "med_name": "Enoxaparin",
+   "explanation": "Double anticoagulation on the go-home list: Cardiology started apixaban for new AF; Orthopedics' DVT-prophylaxis enoxaparin is still active and was carried to discharge. Cardiology verbally stopped it \u2014 the order was never discontinued.",
+   "transcript_evidence": "Now that she's therapeutic on the apixaban, we can stop the Lovenox \u2014 she doesn't need both.",
+   "transcript_speaker": "DR. PATEL (Cardiology), Day 1",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "mr-enoxaparin",
+    "display": "Enoxaparin 40 mg SC daily \u2014 status: active, category: discharge"
+   },
+   "prescriber": {
+    "name": "Dr. Okafor (Orthopedic Surgery)",
+    "npi": "1990000002"
+   },
+   "suggested_fix": "Discontinue enoxaparin; continue apixaban as the sole anticoagulant.",
+   "recommended_resolution": "Stop enoxaparin (resolves duplicate anticoagulation).",
+   "status": "pending",
+   "grounding": "injected"
+  },
+  {
+   "id": "f8",
+   "type": "drug_allergy_conflict",
+   "severity": "high",
+   "med_name": "Ampicillin-sulbactam",
+   "explanation": "Ampicillin-sulbactam, a penicillin-class antibiotic, was ordered empirically at admission for a patient with a charted penicillin allergy. The order predates allergy reconciliation.",
+   "transcript_evidence": "We started her on ampicillin-sulbactam empirically the night she came in febrile.",
+   "transcript_speaker": "DR. REYES (Infectious Disease), Day 3",
+   "chart_evidence": {
+    "resource_type": "AllergyIntolerance",
+    "resource_id": "allergy-pcn",
+    "display": "Penicillin \u2014 reaction: Rash (active)"
+   },
+   "prescriber": {
+    "name": "Dr. Reyes (Infectious Disease)",
+    "npi": "1990000004"
+   },
+   "suggested_fix": "Confirm no discharge penicillin-class order; document the exposure and reaction watch.",
+   "recommended_resolution": "Verify allergy; keep non-beta-lactam coverage.",
+   "status": "pending",
+   "grounding": "injected"
+  },
+  {
+   "id": "f9",
+   "type": "drug_drug_interaction",
+   "severity": "high",
+   "med_name": "Ibuprofen",
+   "explanation": "Ibuprofen was added for swelling while she is on apixaban \u2014 an NSAID plus an anticoagulant sharply raises bleeding risk, and the NSAID is nephrotoxic during the current AKI.",
+   "transcript_evidence": "Keep the oxycodone for breakthrough pain, and add ibuprofen 600 three times a day for the swelling.",
+   "transcript_speaker": "DR. OKAFOR (Orthopedic Surgery), Day 2",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "mr-ibuprofen",
+    "display": "Ibuprofen 600 mg TID \u2014 interacts with apixaban (mr-apixaban)"
+   },
+   "prescriber": {
+    "name": "Dr. Okafor (Orthopedic Surgery)",
+    "npi": "1990000002"
+   },
+   "suggested_fix": "Discontinue ibuprofen; use acetaminophen \u00b1 oxycodone for pain.",
+   "recommended_resolution": "Stop ibuprofen (bleeding + renal risk on apixaban/AKI).",
+   "status": "pending",
+   "grounding": "injected"
+  },
+  {
+   "id": "f10",
+   "type": "discontinued_but_active",
+   "severity": "high",
+   "med_name": "Aspirin",
+   "explanation": "Aspirin was added and remains active alongside newly-started apixaban. Cardiology directed holding it to avoid stacking bleeding risk, but it was never removed.",
+   "transcript_evidence": "Let's hold her baby aspirin while she's on the apixaban \u2014 no need to stack the bleeding risk without a stent indication.",
+   "transcript_speaker": "DR. PATEL (Cardiology), Day 1",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "mr-aspirin",
+    "display": "Aspirin 81 mg daily \u2014 status: active"
+   },
+   "prescriber": {
+    "name": "Dr. Patel (Cardiology)",
+    "npi": "1990000003"
+   },
+   "suggested_fix": "Discontinue aspirin for the duration of apixaban therapy.",
+   "recommended_resolution": "Stop aspirin (bleeding-risk stacking with apixaban).",
+   "status": "pending",
+   "grounding": "injected"
+  },
+  {
+   "id": "f11",
+   "type": "orphaned_course",
+   "severity": "moderate",
+   "med_name": "Cephalexin",
+   "explanation": "The UTI antibiotic has no stop date. ID intended a fixed 7-day course ending 2026-07-19; as written it would continue indefinitely.",
+   "transcript_evidence": "Urine culture's sensitive to cephalexin. Seven days total \u2014 she'll finish it on Saturday, then it stops.",
+   "transcript_speaker": "DR. REYES (Infectious Disease), Day 3",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": "mr-cephalexin",
+    "display": "Cephalexin 500 mg q6h \u2014 no end date on order"
+   },
+   "prescriber": {
+    "name": "Dr. Reyes (Infectious Disease)",
+    "npi": "1990000004"
+   },
+   "suggested_fix": "Add a stop date of 2026-07-19 (completes the 7-day course).",
+   "recommended_resolution": "Set cephalexin end date to 2026-07-19.",
+   "status": "pending",
+   "grounding": "injected"
+  },
+  {
+   "id": "f12",
+   "type": "mentioned_not_recorded",
+   "severity": "moderate",
+   "med_name": "Metoprolol",
+   "explanation": "Cardiology dictated starting metoprolol 25 mg BID for rate control, but no structured discharge order was captured \u2014 the patient would leave without a rate-control agent.",
+   "transcript_evidence": "Start her on metoprolol 25 twice a day for rate control, and her PCP can titrate up as needed.",
+   "transcript_speaker": "DR. PATEL (Cardiology), Day 1",
+   "chart_evidence": {
+    "resource_type": "MedicationRequest",
+    "resource_id": null,
+    "display": "No matching discharge order found"
+   },
+   "prescriber": {
+    "name": "Dr. Patel (Cardiology)",
+    "npi": "1990000003"
+   },
+   "suggested_fix": "Add metoprolol tartrate 25 mg PO BID to the discharge orders, per Cardiology.",
+   "recommended_resolution": "Add metoprolol 25 mg PO BID (captures the spoken order).",
+   "status": "pending",
+   "grounding": "injected"
+  },
+  {
+   "id": "f13",
+   "type": "dropped_result",
+   "severity": "high",
+   "med_name": null,
+   "explanation": "A critical potassium of 5.8 was noted and deferred to an outpatient recheck, but no follow-up lab or management plan was ordered.",
+   "transcript_evidence": "Her potassium came back at 5.8 this morning; let's just recheck it as an outpatient.",
+   "transcript_speaker": "DR. CHEN (Hospitalist), Day 3",
+   "chart_evidence": {
+    "resource_type": "Observation",
+    "resource_id": "obs-k-high",
+    "display": "Potassium 5.8 mmol/L (2026-07-16) \u2014 High, no follow-up ordered"
+   },
+   "prescriber": {
+    "name": "Dr. Chen (Hospitalist)",
+    "npi": "1990000001"
+   },
+   "suggested_fix": "Order a BMP within 48\u201372h and give hyperkalemia precautions.",
+   "recommended_resolution": "Add a post-discharge potassium recheck order.",
+   "status": "pending",
+   "grounding": "injected"
+  }
+ ],
+ "grounding_summary": {
+  "real": 6,
+  "injected": 7,
+  "total": 13
+ }
+}
