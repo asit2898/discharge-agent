@@ -1,11 +1,29 @@
 # Discharge Medication Reconciliation — Project Brief
 
 **Hackathon:** Abridge / "The Future of Agentic AI in Healthcare"
-**One-liner:** An Abridge-powered agent that pre-reconciles a patient's discharge
-medication list from three sources — the ambient **transcript** (intent), the
-**FHIR** record (system truth), and the **active prescriptions** — surfacing every
-discrepancy with a citation back to what was actually said, so a nurse/pharmacist
-*verifies* instead of *hunts*.
+**One-liner:** An Abridge-powered agent that does the tedious *prep* for discharge
+medication reconciliation — it **pre-populates** a draft reconciled list from every
+source (home meds, inpatient orders, and the ambient **transcript**), then **surfaces
+exactly where the sources disagree**, each conflict laid side-by-side with the
+transcript quote and prescriber as evidence. The clinician still makes every call —
+we just turn "assemble the picture from scratch, then decide" into "the picture is
+already assembled and the disagreements are highlighted; decide."
+
+**What it does NOT do:** it does not reconcile *for* the clinician or auto-sign
+anything. It removes the gathering and the hunting, and makes the human's decision
+faster — decision *support*, not decision *replacement*.
+
+### Where the time actually comes from (two levers)
+1. **Pre-population / assembly.** The documented time sink is building the picture —
+   cross-referencing home meds, hospital orders, pharmacy history, and the
+   conversation into one normalized, prescriber-attributed list. We do that up front,
+   so the reconciliation screen opens *already filled in* instead of blank.
+2. **Surfacing disagreements with evidence.** Instead of the clinician eyeballing 15
+   meds to find the 3 that conflict, we put every disagreement on top — home-vs-order,
+   order-vs-conversation, prescriber-vs-prescriber — each with the quote/source that
+   causes it. The decision stays human; the *finding* is done for them.
+
+We win on **making the decision easy, not making the decision.**
 
 ---
 
@@ -219,6 +237,33 @@ case they didn't include. This is a point in our favor with judges, not a liabil
 
 ---
 
+## Assumptions & source authority (how we stay safe)
+
+**We assume ambient transcripts are available for the relevant encounters.** This is
+a *fair* assumption here: this is Abridge — ambient capture of clinical conversations
+is their entire product, already live in Epic and expanding across inpatient and
+specialty settings. Building on that data isn't a stretch; it's the platform's premise.
+
+**The transcript is a detection signal, not the source of truth.** A conversation is
+casual and provisional — a clinician may say "let's stop the heparin" and then keep it
+on the signed order for a good reason. So we never let a raw utterance *overrule* the
+considered record. Our authority order is:
+
+> **signed order / clinical note  >  transcript**
+
+- When the note/order and the transcript **agree**, we pre-populate and move on.
+- When they **disagree**, the transcript's job is only to **raise the flag** — we
+  surface the disagreement and **default our suggested resolution to the note/order**
+  (the deliberate, signed artifact), showing the transcript quote as the *reason we're
+  asking*, not as the answer. The clinician decides.
+
+This gives us the best of both: the transcript lets us **catch** discrepancies a
+FHIR-only tool can't see, while the note/order keeps us from **acting on** an offhand
+remark. Detection from the conversation; recommendation from the record; decision from
+the human.
+
+---
+
 ## Engine (the interesting 80%)
 
 1. **Normalize** all meds to a common shape (name, dose, route, frequency, status,
@@ -229,9 +274,18 @@ case they didn't include. This is a point in our favor with judges, not a liabil
 3. **Explain + cite** — for each flag, an LLM generates the reconciliation reason and
    pulls the supporting **transcript quote** (evidence, with prescriber attribution).
 4. **Rank by risk** — high-risk meds, elderly, polypharmacy, cross-prescriber
-   conflicts float to the top of a **"needs human review" queue.**
-5. **Output** — a draft reconciled outpatient med list + the review queue +
-   auto-drafted patient-friendly "why this changed" lines for the AVS.
+   conflicts float to the top of a **"needs a decision" queue.** Everything that
+   *agrees* across sources is pre-populated and collapsed, so attention lands only on
+   the disagreements.
+5. **Output** — a **pre-populated draft** outpatient med list (the agreements already
+   filled in) + the **disagreements surfaced with evidence** for the clinician to
+   decide + auto-drafted patient-friendly "why this changed" lines for the AVS.
+
+**Framing:** the engine's job is to *assemble and surface*, not to *decide*. Every
+flag is a disagreement between sources shown with its receipt; the clinician resolves
+it. Precision matters more than recall here — a quiet, high-signal queue that the
+clinician trusts beats a noisy one they learn to ignore (alert fatigue is the failure
+mode of every med-rec tool, and the thing we design against).
 
 ## UI (the demoable 20%)
 

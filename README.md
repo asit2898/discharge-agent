@@ -1,10 +1,15 @@
 # discharge-agent
 
-An Abridge-powered agent that **pre-reconciles a patient's discharge medication
-list** from three sources — the ambient **transcript** (intent), the **FHIR** record
-(system truth), and the **active prescriptions** — surfacing every discrepancy with a
-citation back to what was actually said, so a nurse/pharmacist *verifies* instead of
-*hunts*.
+An Abridge-powered agent that does the tedious **prep** for discharge medication
+reconciliation: it **pre-populates** a draft reconciled list from every source (home
+meds, inpatient orders, and the ambient **transcript**), then **surfaces exactly
+where the sources disagree** — each conflict shown side-by-side with the transcript
+quote and prescriber as evidence. The clinician still makes every call; we just turn
+*"assemble the picture from scratch, then decide"* into *"the picture is already
+assembled and the disagreements are highlighted — decide."*
+
+**Decision support, not decision replacement.** We make the decision easy, not the
+decision.
 
 > Every existing tool has either the **conversation** or the **structured record**.
 > We reconcile the two against each other — three-way (transcript ↔ FHIR ↔
