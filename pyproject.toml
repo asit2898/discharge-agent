@@ -1,5 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "discharge-agent"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "httpx>=0.27",
+]
+
+[tool.setuptools]
+packages = ["discharge_agent"]
+
+[tool.setuptools.package-dir]
+discharge_agent = "backend/discharge_agent"

@@ -23,7 +23,40 @@ integration story, and the competitive landscape.
 ## Repo layout
 
 - `PROJECT.md` — project brief / pitch
+- `docs/` — engine build plan, ideation, data-pipeline notes
+- `data/` — our own 100-record labeled discrepancy eval set + generators
 - `synthetic-ambient-fhir-25/` — provided Abridge dataset (25 synthetic ambient +
   FHIR encounters) used as the data substrate
+- `backend/discharge_agent/` — FastAPI service: dataset loader → med normalizer →
+  reconciliation engine (**stub today**, neuro-symbolic safety-catch loop later)
+- `frontend/` — Vite + React + TS **Epic Discharge Navigator clone** with the
+  Reconciliation Copilot embedded as a SMART-on-FHIR extension panel
+
+## Running the scaffold
+
+Two processes. Backend (port 8000):
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e .
+.venv/bin/uvicorn discharge_agent.main:app --app-dir backend --reload --port 8000
+```
+
+Frontend (port 5173, proxies `/api` → 8000):
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Open http://localhost:5173. It boots on the **hero discharge** (Margaret Alvarez —
+hip-fracture ORIF with new AF + UTI, four prescribing teams) showing five grounded
+catches; the top switcher also loads the real 25 encounters. The engine is a
+deterministic **stub** whose output shape matches the labeled eval taxonomy, so the
+real Claude-driven detector drops in behind the same API contract.
+
+### API
+
+- `GET /api/encounters` — hero first, then the real 25
+- `GET /api/encounters/{id}` — header, transcript, note, AVS, normalized meds
+- `GET /api/encounters/{id}/reconcile` — draft med list + ranked flag queue + stats
 
 Built for the Abridge "Future of Agentic AI in Healthcare" hackathon.
