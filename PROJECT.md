@@ -1,0 +1,252 @@
+# Discharge Medication Reconciliation — Project Brief
+
+**Hackathon:** Abridge / "The Future of Agentic AI in Healthcare"
+**One-liner:** An Abridge-powered agent that pre-reconciles a patient's discharge
+medication list from three sources — the ambient **transcript** (intent), the
+**FHIR** record (system truth), and the **active prescriptions** — surfacing every
+discrepancy with a citation back to what was actually said, so a nurse/pharmacist
+*verifies* instead of *hunts*.
+
+---
+
+## The problem (validated, not assumed)
+
+Medication reconciliation at care transitions is one of the most-studied
+patient-safety failures in medicine:
+
+- **~60% of medication errors** occur at care transitions (admission / transfer /
+  discharge). More than **40%** trace to inadequate reconciliation.
+- **Up to 67–70% of patients** have an *unintended* medication discrepancy at
+  admission or discharge; discrepancies are **more common at discharge** than
+  admission.
+- **~78–80% of discrepancies are "system-generated"** — the two biggest drivers
+  are **failure to remove discontinued meds** and **failure to capture meds
+  discussed but never structured**. This is the gap only the transcript can close.
+- **12.5% of patients** have an adverse drug event within 30 days of discharge;
+  **~62% were preventable.**
+
+Sources:
+- Medication Reconciliation as a Patient Safety Strategy — *Annals of Internal Medicine* (2013). https://www.acpjournals.org/doi/10.7326/0003-4819-158-5-201303051-00006
+- Unintentional medication discrepancies at care transitions — *BMC Geriatrics* (2024). https://link.springer.com/article/10.1186/s12877-024-05517-w
+- Sources & Types of Discrepancies Between EMRs and Actual Outpatient Medication Use — *PMC*. https://pmc.ncbi.nlm.nih.gov/articles/PMC10437703/
+- Readmissions and Adverse Events After Discharge — *AHRQ PSNet*. https://psnet.ahrq.gov/primer/readmissions-and-adverse-events-after-discharge
+- When Records Do Not Connect: Medication Safety in EHR Interoperability Gaps — *Pharmacy Times*. https://www.pharmacytimes.com/view/when-records-do-not-connect-medication-safety-risks-hidden-in-ehr-interoperability-gaps
+
+---
+
+## Point 1 — The pharmacist is usually absent (our core opening)
+
+Pharmacist-led discharge reconciliation is the accuracy gold standard, but it is a
+**special program, not the default** — typically reserved for high-risk patients.
+In the common case, discharge reconciliation is done by the **discharging
+physician alone, from memory**, then handed to a **nurse** for patient education.
+
+When a pharmacist *is* involved, the workflow is:
+**Pharmacist reconciles & "pends" a draft in the EHR → Physician reviews & signs →
+Nurse assembles the After-Visit Summary (AVS) & educates the patient.**
+The physician always signs last (legal authority); the pharmacist works *in front
+of* that signature.
+
+- Pharmacist-obtained medication histories are **more accurate and complete** than
+  those obtained by other clinicians. BPMH (Best Possible Medication History) is
+  explicitly documented as **time-consuming** because it requires cross-checking
+  multiple sources (community pharmacy, EHR, patient interview, outside records).
+
+**Our positioning:** the agent *plays the role of the pharmacist the patient didn't
+get* — an always-on reconciliation pass that pends a draft for the physician/nurse.
+
+Sources:
+- Pharmacist-facilitated discharge med-rec workflow — *ScienceDirect* (2022). https://www.sciencedirect.com/science/article/abs/pii/S1544319122003247
+- BPMH / Medication Reconciliation — *ISMP Canada*. https://ismpcanada.ca/courses/medication-reconciliation-and-obtaining-a-best-possible-medication-history-bpmh-in-primary-care/
+- Epic Physician Discharge Reconciliation Process — *Salem Health*. https://www.salemhealth.org/docs/default-source/default-document-library/education---physician-discharge-reconciliation.pdf
+
+---
+
+## Point 2 — Multi-source / multi-specialist is the hero scenario
+
+The reason reconciliation is hard and error-prone: during a stay, **each specialist
+prescribes inside their own silo** for their own problem, and **no single person
+holds the aggregate view.** At discharge, one clinician must reconcile *everyone's*
+orders into one outpatient list.
+
+This produces the two worst discrepancy types, which we specifically detect:
+
+1. **Cross-prescriber conflicts / duplication** — e.g. surgeon continues an
+   anticoagulant for DVT prophylaxis while the patient's home regimen already
+   includes one → double therapy.
+2. **Orphaned meds** — a course a specialist started (e.g. an ID antibiotic or a
+   steroid taper) that no one remembered to explicitly stop or continue.
+
+**Two deployment modes, same engine:**
+- **Primary target — no pharmacist present:** the agent *is* the reconciliation
+  safety net between physician and nurse. Highest real-world coverage.
+- **When a pharmacist is present:** the pharmacist becomes the **reviewer of our
+  output** — we pend the draft, they verify a ranked queue instead of building the
+  list from scratch. Either way a licensed human approves; we never sign.
+
+FHIR makes attribution possible: each `MedicationRequest` carries a **`requester`**
+(prescriber name + NPI) and a **`category`** (inpatient / outpatient / community),
+so we can label *who ordered what* and *which meds are hospital-only vs. home*.
+
+---
+
+## Point 3 — Epic add-on, not a replacement (the integration story)
+
+We do **not** replace Epic and we do **not** use brittle screen-scraping / computer-use.
+The sanctioned path is a **SMART on FHIR embedded app**, registered via Epic's
+marketplace (**Showroom / Connection Hub**), that:
+- **reads** patient context via an authenticated FHIR token
+  (`MedicationRequest`, `MedicationStatement`, `AllergyIntolerance`), and
+- **pends a draft reconciliation** back into Epic's existing discharge med-rec
+  screen — the *same "pend for the physician to sign" mechanism the pharmacist uses.*
+
+**Why this is credible for an Abridge judge:** Abridge is already **"Epic's First
+Pal"** — embedded in Epic (records in Haiku, writes notes *and orders* back through
+Hyperdrive, bidirectional). Our engine **rides the Abridge embed that already
+exists**, consuming the transcript Abridge already captures. We are an augmentation
+layer on their platform, not a rip-and-replace.
+
+**For the demo:** all of this is **mocked** — no live Epic. Inputs are local
+FHIR-shaped JSON + a transcript; the output UI is styled as "the pre-filled
+reconciliation draft that pends into Epic." Credibility line:
+> *"We don't replace Epic — we pend a draft into the screen clinicians already use,
+> riding the Abridge embed that writes orders today."*
+
+Sources:
+- Abridge Inside for Inpatient/Outpatient Orders. https://www.abridge.com/press-release/abridge-inside-for-inpatient-and-outpatient-orders
+- Abridge Becomes Epic's First Pal. https://www.abridge.com/press-release/abridge-becomes-epics-first-pal-bringing-generative-ai-to-more-providers-and-patients
+- Building a SMART on FHIR App with Epic — *Itirra*. https://itirra.com/blog/how-to-build-a-smart-on-fhir-app-that-integrates-with-epic/
+
+---
+
+## Landscape & differentiation (why doesn't X already do this?)
+
+The market splits into **two camps, and no one sits in the seam between them** —
+which is exactly where we live.
+
+### Camp A — Ambient documentation (Dragon Copilot, Wellsheet, Abridge itself)
+Listen to the conversation and **generate documents** — notes, discharge summaries,
+flowsheets.
+- **Microsoft Dragon Copilot** — Oct 2025 nursing release ambiently captures
+  nurse-patient talk → flowsheet entries; generates discharge reports.
+- **Wellsheet Care Team Copilot** — reads the whole chart → drafts the discharge
+  summary + length-of-stay dashboard.
+
+**What they do NOT do:** cross-check the conversation *against* the structured
+orders and flag **discrepancies with evidence.** They transcribe and summarize; they
+don't reconcile and contest. *A discharge summary that faithfully repeats a wrong med
+list is still wrong.*
+
+### Camp B — Medication-history data tools (DrFirst, Cureatr)
+The serious med-rec incumbents. They aggregate **external structured history** and
+normalize it.
+- **DrFirst (MedHx / SmartSuite)** — pulls 12 months of external fill history
+  (Surescripts, pharmacy, payer, HIE), auto-maps 86% of sigs.
+- **Cureatr** — aggregates records across Carequality / CommonWell / eHealth Exchange.
+
+**What they do NOT do:** they source from **structured fill/claims data — never the
+conversation.** Great at "what was the patient dispensed?"; blind to "what did the
+doctor just decide and say?" They cannot catch a med a surgeon *verbally* stopped
+that is still an active order, because that intent lives only in the room.
+
+### Our wedge (one sentence)
+> Every existing tool has either the **conversation** OR the **structured record**.
+> We are the only one that **reconciles the two against each other** — three-way
+> (transcript ↔ FHIR ↔ prescriptions), across **multiple prescribers**, with the
+> **transcript quote as the evidence** for each flag.
+
+**Three defensible differentiators:**
+1. **Conflict detection, not documentation.** Camp A writes down what was said; we
+   *diff it against the orders and raise a flag when they disagree.* Different job.
+2. **The conversation as a first-class reconciliation source.** Camp B's best data is
+   a pharmacy fill record; ours is what the ID doctor *actually said*. This is
+   Abridge's structural moat — they own the ambient layer.
+3. **Cross-prescriber attribution + citation.** We flag the surgeon-vs-cardiologist
+   anticoagulant duplication and cite *who said what* — a ranked queue of conflicts,
+   each with a receipt.
+
+### The honest risk (and our answer)
+*"Abridge already generates discharge orders from the conversation — isn't this their
+roadmap?"* → **Generating an order from the conversation is the easy half. The hard,
+unsolved half is catching where the conversation and the existing record *conflict* —
+the discontinued-but-still-active med, the two teams double-prescribing. Abridge
+produces the intent stream; we are the reconciliation/conflict layer that consumes
+it.** This makes us *additive to Abridge*, the right posture in their own hackathon.
+
+Sources:
+- Microsoft extends Dragon Copilot to nurses (Oct 2025). https://news.microsoft.com/source/2025/10/16/microsoft-extends-ai-advancements-in-dragon-copilot-to-nurses-and-partners-to-enhance-patient-care/
+- Wellsheet launches Care Team Copilot — *HIT Consultant*. https://hitconsultant.net/2025/07/18/wellsheet-launches-care-team-copilot-to-halve-charting-time/
+- DrFirst Medication History & Reconciliation. https://drfirst.com/medication-history-reconciliation
+- Cureatr Medication Management Technology. https://www.cureatr.com/comprehensive-medication-management-technology
+
+---
+
+## Point 4 — Data: what we have and what we must build
+
+**Provided dataset:** `synthetic-ambient-fhir-25/` — 25 synthetic patients, **one
+encounter each**, each record bundling:
+- `transcript` (speaker-labeled ambient conversation — our **intent** source)
+- `note` (SOAP clinical note) + `after_visit_summary` (baseline AVS to improve on)
+- `patient_context.longitudinal_summary` — `resource_counts`,
+  `condition_labels`, `medication_labels`
+- `encounter_fhir.related_resources` — FHIR R4 grouped by type, including
+  **`MedicationRequest`** with `status`, `intent`, `authoredOn`,
+  `category` (**inpatient/outpatient/community**), and **`requester`** (prescriber
+  + NPI). Drug names resolve via `medicationReference` → `Medication` /
+  `medication_labels`.
+
+**This gives us:** the exact FHIR shape we need for prescriber attribution and
+inpatient-vs-home classification, plus paired transcript↔note↔AVS to ground the
+"cite what was said" feature.
+
+**The gap we must fill ourselves:** the data is **one encounter per patient**, so a
+true **multi-specialist inpatient→discharge journey does not exist natively.** The
+hero scenario is something we **construct**:
+- Generate a richer patient (Synthea-style FHIR) with encounters + `MedicationRequest`s
+  from **multiple prescribers** (hospitalist, surgeon, ID), and
+- Author **multiple transcripts** (per-specialist + discharge conversation) with LLMs,
+  **planting deliberate discrepancies**: one discontinued-but-still-listed med, one
+  cross-prescriber duplication/conflict, one orphaned antibiotic course.
+
+Everything else in the engine reads this constructed bundle exactly as if it came
+from a live FHIR token.
+
+**Note — generating more data is on-method, not a hack:** the provided dataset was
+itself built with **Synthea (simulated patients) + LLM-authored transcripts**
+grounded in the structured record. Constructing our multi-specialist hero patient
+uses the *same pipeline Abridge used*, simply extended to the transition-of-care
+case they didn't include. This is a point in our favor with judges, not a liability.
+
+---
+
+## Engine (the interesting 80%)
+
+1. **Normalize** all meds to a common shape (name, dose, route, frequency, status,
+   prescriber, source, category).
+2. **Three-way diff** across transcript / FHIR / prescriptions → classify each med:
+   `unchanged`, `dose-changed`, `newly-started`, `discontinued`,
+   `conflict`, `mentioned-but-not-recorded`.
+3. **Explain + cite** — for each flag, an LLM generates the reconciliation reason and
+   pulls the supporting **transcript quote** (evidence, with prescriber attribution).
+4. **Rank by risk** — high-risk meds, elderly, polypharmacy, cross-prescriber
+   conflicts float to the top of a **"needs human review" queue.**
+5. **Output** — a draft reconciled outpatient med list + the review queue +
+   auto-drafted patient-friendly "why this changed" lines for the AVS.
+
+## UI (the demoable 20%)
+
+One reconciliation screen — left: draft outpatient med list; right: discrepancy queue,
+each card with ✅ Accept / ✏️ Edit / ❌ Reject and a transcript snippet ("why").
+A reviewer clears a full patient in ~60 seconds.
+
+**Killer demo moment:** a med the **EHR still lists but the transcript shows a
+specialist stopped** (or a cross-team duplication) — our agent catches it, cites the
+quote and the prescriber, and a FHIR-only tool never could.
+
+---
+
+## Open decisions
+- **Persona for the demo UI:** nurse vs. pharmacist vs. physician (same engine).
+  Leaning nurse/pharmacist for the cleanest "verify a queue" story.
+- **Stack:** single-page web app (React) + small backend calling Claude for the
+  reason/citation step.
