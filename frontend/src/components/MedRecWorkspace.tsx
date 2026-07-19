@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Flag, Med, ReviewStatus } from '../types'
 import { DISP_LABEL, prettyType, proposedDisp, sigOf, type Disp } from '../recon'
 import { Icon, type IconName } from './icons'
@@ -16,9 +17,11 @@ interface Group {
   sources: Med['source'][]
 }
 
+// Same three origin lanes as the Orders view, so the reconciliation reads consistently.
 const GROUPS: Group[] = [
   { key: 'pta', title: 'Prior to Admission', icon: 'home', sources: ['home'] },
-  { key: 'hosp', title: 'Hospital Orders', icon: 'bed', sources: ['inpatient', 'discharge'] },
+  { key: 'inpatient', title: 'Inpatient Orders', icon: 'bed', sources: ['inpatient'] },
+  { key: 'discharge', title: 'Discharge Orders', icon: 'note', sources: ['discharge'] },
 ]
 
 // --- flag ↔ med matching (a med can own several flags) -----------------------
@@ -33,9 +36,11 @@ function medFlagsFor(med: Med, flags: Flag[]): Flag[] {
 
 // The status-quo disposition (what happens without the copilot). Active orders default to
 // Continue; a dropped home med defaults to "Don't continue" (it fell off the draft).
-function defaultDisp(flag: Flag): Disp {
-  if (flag.type === 'dropped_home_med') return 'discontinue'
-  return 'continue'
+// The DEFAULT disposition is the point-in-time discharge snapshot, read from the med
+// itself: on the discharge order set -> "Continue"; not on it (dropped home med or an
+// inpatient-only order) -> "Don't continue". Never inferred from a flag.
+function snapshotDefault(med: Med): Disp {
+  return med.on_discharge ? 'continue' : 'discontinue'
 }
 const DEFAULT_LABEL: Record<Disp, string> = {
   continue: 'Continue',
@@ -94,18 +99,19 @@ function statusForPick(flag: Flag, picked: Disp): ReviewStatus {
 function CopilotCell({
   flags,
   status,
+  defaultSel,
   addMode = false,
 }: {
   flags: Flag[]
   status: ReviewStatus
+  defaultSel: Disp // the discharge-snapshot default this med starts from
   addMode?: boolean
 }) {
   const primary = flags[0]
   const proposed = proposedDisp(primary)
-  const def = defaultDisp(primary)
   const proposedLabel = addMode ? 'Add order' : DISP_LABEL[proposed]
-  const defaultLabel = addMode ? 'Not ordered' : DEFAULT_LABEL[def]
-  const showDelta = addMode || def !== proposed
+  const defaultLabel = addMode ? 'Not ordered' : DEFAULT_LABEL[defaultSel]
+  const showDelta = addMode || defaultSel !== proposed
   const statusLabel =
     status === 'accepted'
       ? 'Confirmed'
@@ -154,6 +160,8 @@ function MedRow({
   medFlags,
   statuses,
   onAct,
+  override,
+  onOverride,
   selectedFlagId,
   onSelect,
 }: {
@@ -161,6 +169,8 @@ function MedRow({
   medFlags: Flag[]
   statuses: Record<string, ReviewStatus>
   onAct: (id: string, s: ReviewStatus) => void
+  override?: Disp
+  onOverride: (medId: string, d: Disp) => void
   selectedFlagId: string | null
   onSelect: (id: string | null) => void
 }) {
@@ -171,20 +181,22 @@ function MedRow({
     : anyPending
       ? 'pending'
       : (statuses[primary.id] ?? 'pending')
-  // Inpatient-only orders (IV fluids, stress-ulcer/nausea prophylaxis) don't go home —
-  // they default to "Don't continue" at discharge, not "Continue".
-  const inpatientStop = !primary && med.source === 'inpatient'
+  // The med's starting point = the discharge-snapshot default (data, not a flag guess).
+  const defSel = snapshotDefault(med)
   const { sel, state } = primary
     ? resolve(primary, medStatus)
-    : { sel: (inpatientStop ? 'discontinue' : 'continue') as Disp, state: 'reconciled' as const }
+    : override // an unflagged med the physician manually changed from its default
+      ? { sel: override, state: 'confirmed' as const }
+      : { sel: defSel, state: 'reconciled' as const }
   const rowCls = primary && anyPending ? `flagged disp-${proposedDisp(primary)}` : ''
-  // One decision per med: acting on the row applies to ALL of the med's flags.
+  // One decision per med. Flagged meds fold all their flags into one review status;
+  // unflagged meds record a manual disposition override (so their buttons work too).
   const onPick = primary
     ? (d: Disp) => {
         const s = statusForPick(primary, d)
         medFlags.forEach((f) => onAct(f.id, s))
       }
-    : undefined
+    : (d: Disp) => onOverride(med.id, d)
   const selected = !!primary && primary.id === selectedFlagId
   return (
     <div className={`med-item ${rowCls} ${selected ? 'selected' : ''}`}>
@@ -201,9 +213,9 @@ function MedRow({
         <span className="mc mc-by">{med.prescriber?.name ?? '—'}</span>
         <span className="mc mc-cop">
           {primary ? (
-            <CopilotCell flags={medFlags} status={medStatus} />
-          ) : inpatientStop ? (
-            <span className="cop-none">Stop · inpatient order (routine)</span>
+            <CopilotCell flags={medFlags} status={medStatus} defaultSel={defSel} />
+          ) : defSel === 'discontinue' ? (
+            <span className="cop-none">Stop · not on discharge list (routine)</span>
           ) : (
             <span className="cop-none">Continue · no change</span>
           )}
@@ -222,6 +234,8 @@ function GroupCard({
   flags,
   statuses,
   onAct,
+  overrides,
+  onOverride,
   selectedFlagId,
   onSelectFlag,
 }: {
@@ -230,6 +244,8 @@ function GroupCard({
   flags: Flag[]
   statuses: Record<string, ReviewStatus>
   onAct: (id: string, s: ReviewStatus) => void
+  overrides: Record<string, Disp>
+  onOverride: (medId: string, d: Disp) => void
   selectedFlagId: string | null
   onSelectFlag: (id: string | null) => void
 }) {
@@ -242,6 +258,17 @@ function GroupCard({
     medFlagsFor(m, flags).some((f) => (statuses[f.id] ?? 'pending') === 'pending'),
   ).length
   const acceptGroup = () => pendingIds.forEach((id) => onAct(id, 'accepted'))
+
+  // Order: copilot's suggested changes first (stop / add-back), then suggested edits
+  // (modify), then the clean/no-change meds — high severity ahead of moderate in each tier.
+  const rank = (m: Med): number => {
+    const mf = medFlagsFor(m, flags)
+    if (mf.length === 0) return 9 // clean → last
+    const sevBoost = mf.some((f) => f.severity === 'high') ? 0 : 1
+    const dispBoost = proposedDisp(mf[0]) === 'modify' ? 2 : 0 // edits after suggestions
+    return dispBoost + sevBoost
+  }
+  const orderedMeds = [...meds].sort((a, b) => rank(a) - rank(b))
   return (
     <div className="grp-card">
       <div className="grp-head">
@@ -262,13 +289,15 @@ function GroupCard({
       </div>
       <div className="grp-body">
         {COLHEAD('Ordered by', 'Disposition')}
-        {meds.map((med) => (
+        {orderedMeds.map((med) => (
           <MedRow
             key={med.id}
             med={med}
             medFlags={medFlagsFor(med, flags)}
             statuses={statuses}
             onAct={onAct}
+            override={overrides[med.id]}
+            onOverride={onOverride}
             selectedFlagId={selectedFlagId}
             onSelect={onSelectFlag}
           />
@@ -323,7 +352,7 @@ function AddMedsCard({
                 <span className="mc mc-sig">—</span>
                 <span className="mc mc-by">{flag.prescriber?.name ?? '—'}</span>
                 <span className="mc mc-cop">
-                  <CopilotCell flags={[flag]} status={status} addMode />
+                  <CopilotCell flags={[flag]} status={status} defaultSel="discontinue" addMode />
                 </span>
                 <span className="mc mc-act" onClick={(e) => e.stopPropagation()}>
                   <div className="med-actions live">
@@ -411,6 +440,13 @@ export function MedRecWorkspace({
   subtitle: string
   isHero: boolean
 }) {
+  // Manual disposition overrides for UNFLAGGED meds (routine continues/stops the physician
+  // changes). Flagged meds are tracked via `statuses`; this keeps their buttons live too,
+  // without affecting the flag-review count that gates Reconcile-Close.
+  const [overrides, setOverrides] = useState<Record<string, Disp>>({})
+  const onOverride = (medId: string, d: Disp) =>
+    setOverrides((prev) => ({ ...prev, [medId]: d }))
+
   // Flags that reference an existing med stay on its row; the rest split by kind.
   const attached = new Set(
     flags.filter((f) => meds.some((m) => medMatches(f, m))).map((f) => f.id),
@@ -468,6 +504,8 @@ export function MedRecWorkspace({
               flags={flags}
               statuses={statuses}
               onAct={onAct}
+              overrides={overrides}
+              onOverride={onOverride}
               selectedFlagId={selectedFlagId}
               onSelectFlag={onSelectFlag}
             />

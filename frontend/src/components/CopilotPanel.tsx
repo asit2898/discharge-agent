@@ -1,13 +1,17 @@
 import type { Flag, ReviewStatus } from '../types'
-import { prettyType, SEVERITY_LABEL, STATUS_VERB } from '../recon'
-import { Icon } from './icons'
+import { evidenceLinks, prettyType, SEVERITY_LABEL, STATUS_VERB } from '../recon'
+import { Icon, type IconName } from './icons'
 
-// Which chart tab a cited FHIR resource lives in — so the grounding names its source.
-const SOURCE_TAB: Record<string, string> = {
-  MedicationRequest: 'Med Rec',
-  Observation: 'Results Review',
-  Condition: 'Problem List',
-  AllergyIntolerance: 'Allergies',
+// Where to jump when a grounding link is clicked.
+export interface SourceTarget {
+  tab: string
+  highlight: string
+}
+
+const CHIP_ICON: Record<string, IconName> = {
+  order: 'pill',
+  lab: 'flask',
+  condition: 'clipboard',
 }
 
 // Which catches live ONLY in the journey (the conversation across days + the temporal
@@ -33,11 +37,12 @@ function FlagCard({
   flag: Flag
   status: ReviewStatus
   onAct: (id: string, s: ReviewStatus) => void
-  onOpenSource?: (flag: Flag, which: 'transcript' | 'chart') => void
+  onOpenSource?: (target: SourceTarget) => void
   hideActions?: boolean
 }) {
   const sev = flag.severity === 'high' ? 'high' : 'moderate'
   const resolved = status !== 'pending'
+  const links = evidenceLinks(flag)
   return (
     <div className={`flag-card ${sev} ${resolved ? 'resolved' : ''}`}>
       <div className="flag-top">
@@ -60,64 +65,59 @@ function FlagCard({
       <div className="flag-body">
         <div className="flag-expl">{flag.explanation}</div>
 
-        {/* Grounding shows only what the row DOESN'T already tell you: the spoken source,
-            and any counterpart chart resource (lab / allergy / other drug). A flag's own
-            MedicationRequest is the row you clicked — redundant, so it's suppressed. */}
-        {(() => {
-          const ce = flag.chart_evidence
-          const showChart = !!ce && ce.resource_type !== 'MedicationRequest'
-          const showTx = !!flag.transcript_evidence
-          if (!showTx && !showChart) return null
-          return (
-            <div className="grounded">
-              <div className="grounded-head">Grounded in</div>
+        {/* Grounding = links to the OTHER tabs where the reasons live. The spoken source
+            (transcript) shows the quote; the chart reasons (ordered drug → Orders, cited
+            lab → Results Review, condition → Problem List) are clickable chips. The flag's
+            own med row is redundant, so it's never shown. */}
+        {(flag.transcript_evidence || links.length > 0) && (
+          <div className="grounded">
+            <div className="grounded-head">Grounded in</div>
 
-              {showTx && (
-                <button
-                  className={`ev-src transcript ${onOpenSource ? 'clickable' : ''}`}
-                  onClick={onOpenSource ? () => onOpenSource(flag, 'transcript') : undefined}
-                  type="button"
-                >
-                  <div className="ev-src-top">
-                    <Icon name="mic" size={12} />
-                    <span className="ev-src-label">Transcript</span>
-                    {flag.transcript_speaker && (
-                      <span className="ev-src-by">{flag.transcript_speaker}</span>
-                    )}
-                  </div>
-                  <div className="ev-quote">“{flag.transcript_evidence}”</div>
-                  {onOpenSource && <div className="ev-open">Open in Transcript ›</div>}
-                </button>
-              )}
-
-              {showChart && ce && (
-                <div
-                  className={`ev-src chart ${onOpenSource ? 'clickable' : ''}`}
-                  onClick={onOpenSource ? () => onOpenSource(flag, 'chart') : undefined}
-                >
-                  <div className="ev-src-top">
-                    <Icon name="clipboard" size={12} />
-                    <span className="ev-src-label">{ce.resource_type}</span>
-                    {flag.grounding === 'real' && (
-                      <span
-                        className="ground-badge"
-                        title="Anchored to a real resource in the patient's chart"
-                      >
-                        ✓ real chart
-                      </span>
-                    )}
-                  </div>
-                  {ce.display && <div className="ev-chart-val">{ce.display}</div>}
-                  {onOpenSource && (
-                    <div className="ev-open">
-                      Open in {SOURCE_TAB[ce.resource_type] ?? 'the chart'} ›
-                    </div>
+            {flag.transcript_evidence && (
+              <button
+                className={`ev-src transcript ${onOpenSource ? 'clickable' : ''}`}
+                onClick={
+                  onOpenSource
+                    ? () =>
+                        onOpenSource({ tab: 'Transcript', highlight: flag.transcript_evidence! })
+                    : undefined
+                }
+                type="button"
+              >
+                <div className="ev-src-top">
+                  <Icon name="mic" size={12} />
+                  <span className="ev-src-label">Transcript</span>
+                  {flag.transcript_speaker && (
+                    <span className="ev-src-by">{flag.transcript_speaker}</span>
                   )}
                 </div>
-              )}
-            </div>
-          )
-        })()}
+                <div className="ev-quote">“{flag.transcript_evidence}”</div>
+                {onOpenSource && <div className="ev-open">Open in Transcript ›</div>}
+              </button>
+            )}
+
+            {links.length > 0 && (
+              <div className="ev-chips">
+                {links.map((l, i) => (
+                  <button
+                    key={i}
+                    className={`ev-chip ${l.kind}`}
+                    onClick={
+                      onOpenSource
+                        ? () => onOpenSource({ tab: l.tab, highlight: l.highlight })
+                        : undefined
+                    }
+                    title={`Open ${l.label} in ${l.tab}`}
+                  >
+                    <Icon name={CHIP_ICON[l.kind]} size={11} />
+                    <span className="ev-chip-label">{l.label}</span>
+                    <span className="ev-chip-tab">{l.tab} ›</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="fix">
           <span className="k">Suggested fix</span>
@@ -175,7 +175,7 @@ export function CopilotPanel({
   onPend: () => void
   selectedFlagId: string | null
   onSelectFlag: (id: string | null) => void
-  onOpenSource?: (flag: Flag, which: 'transcript' | 'chart') => void
+  onOpenSource?: (target: SourceTarget) => void
 }) {
   const isPending = (f: Flag) => (statuses[f.id] ?? 'pending') === 'pending'
   const pending = flags.filter(isPending).length

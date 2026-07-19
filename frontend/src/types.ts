@@ -20,6 +20,7 @@ export interface Med {
   source: MedSource
   prescriber: Prescriber
   authored_on: string | null
+  on_discharge: boolean
 }
 
 export type FlagType =
@@ -60,6 +61,10 @@ export interface Flag {
   recommended_resolution: string
   status: ReviewStatus
   grounding: 'real' | 'injected' | null
+  // agent adjudication (present when the orchestrator agent confirmed the flag)
+  agent_disposition: 'continue' | 'modify' | 'discontinue' | null
+  agent_action: string | null
+  agent_rationale: string | null
 }
 
 export interface ReconStats {
@@ -69,11 +74,22 @@ export interface ReconStats {
   high_severity_count: number
 }
 
+// One step in the orchestrator agent's reasoning trace.
+export interface AgentEvent {
+  kind: 'thought' | 'action'
+  text: string | null
+  tool: string | null
+  input: Record<string, unknown> | null
+  result: string | null
+}
+
 export interface Reconciliation {
   encounter_id: string
   draft_meds: Med[]
   flags: Flag[]
   stats: ReconStats
+  mode: 'agent' | 'workflow'
+  trace: AgentEvent[]
 }
 
 export interface EncounterSummary {

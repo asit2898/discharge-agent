@@ -20,6 +20,9 @@ from . import config
 # Model split per docs/engine.md: a strong model for extraction/verify quality.
 EXTRACT_MODEL = os.environ.get("DISCHARGE_EXTRACT_MODEL", "claude-opus-4-8")
 VERIFY_MODEL = os.environ.get("DISCHARGE_VERIFY_MODEL", "claude-opus-4-8")
+# The orchestrator agent's model — it drives the tool-use loop (plan → check →
+# investigate → confirm/dismiss → act). Same strong model by default.
+ORCHESTRATOR_MODEL = os.environ.get("DISCHARGE_ORCHESTRATOR_MODEL", "claude-opus-4-8")
 
 
 def _load_dotenv() -> None:
@@ -82,6 +85,92 @@ def call_structured(
         if getattr(block, "type", None) == "tool_use" and block.name == tool_name:
             return dict(block.input)
     return None
+
+
+def run_tool_loop(
+    *,
+    model: str,
+    system: str,
+    user: str,
+    tools: list[dict[str, Any]],
+    dispatch,
+    max_iters: int = 24,
+    max_tokens: int = 2048,
+) -> Optional[list[dict[str, Any]]]:
+    """Drive a real multi-turn tool-use loop — the model decides which tool to call
+    each turn until it stops (or the iteration cap trips). This is the agent primitive.
+
+    `dispatch(name, input_dict) -> dict` executes one tool call and returns a dict that
+    may carry control keys:
+        "content" — JSON-serializable payload sent back to the model (defaults to the
+                    whole dict minus control keys)
+        "summary" — short human string recorded in the trace (defaults to content)
+        "stop"    — True to end the loop after this call (e.g. a `finish` tool)
+
+    Returns an ordered trace of events ({"kind": "thought"|"action", ...}) for display,
+    or None if the LLM is unavailable. The caller owns any accumulated state via the
+    dispatch closure; this function is deliberately state-free.
+    """
+    client = _client()
+    if client is None:
+        return None
+
+    messages: list[dict[str, Any]] = [{"role": "user", "content": user}]
+    trace: list[dict[str, Any]] = []
+
+    for _ in range(max_iters):
+        resp = client.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            system=system,
+            tools=tools,
+            messages=messages,
+        )
+
+        # Rebuild the assistant turn as plain dicts so it can be replayed in `messages`.
+        assistant_content: list[dict[str, Any]] = []
+        tool_uses = []
+        for block in resp.content:
+            btype = getattr(block, "type", None)
+            if btype == "text":
+                text = (block.text or "").strip()
+                if text:
+                    trace.append({"kind": "thought", "text": text})
+                assistant_content.append({"type": "text", "text": block.text or ""})
+            elif btype == "tool_use":
+                tool_uses.append(block)
+                assistant_content.append(
+                    {"type": "tool_use", "id": block.id, "name": block.name, "input": dict(block.input)}
+                )
+        messages.append({"role": "assistant", "content": assistant_content})
+
+        if resp.stop_reason != "tool_use" or not tool_uses:
+            break
+
+        tool_results = []
+        stop = False
+        for tu in tool_uses:
+            args = dict(tu.input)
+            try:
+                out = dispatch(tu.name, args) or {}
+            except Exception as exc:  # a bad tool call must not kill the loop
+                out = {"content": {"error": str(exc)}, "summary": f"error: {exc}"}
+            content = out.get("content", {k: v for k, v in out.items() if k not in ("content", "summary", "stop")})
+            summary = out.get("summary")
+            if summary is None:
+                summary = content if isinstance(content, str) else json.dumps(content, default=str)[:400]
+            trace.append({"kind": "action", "tool": tu.name, "input": args, "result": str(summary)[:600]})
+            tool_results.append(
+                {"type": "tool_result", "tool_use_id": tu.id,
+                 "content": content if isinstance(content, str) else json.dumps(content, default=str)}
+            )
+            if out.get("stop"):
+                stop = True
+        messages.append({"role": "user", "content": tool_results})
+        if stop:
+            break
+
+    return trace
 
 
 def status() -> dict[str, Any]:

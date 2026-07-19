@@ -37,6 +37,10 @@ class Med(BaseModel):
     source: MedSource = "inpatient"
     prescriber: Prescriber = Prescriber()
     authored_on: Optional[str] = None
+    # Point-in-time discharge snapshot: is this med on the discharge order set right now?
+    # This is the DEFAULT disposition (True -> "continue", False -> "don't continue"); the
+    # copilot's proposal is the delta from it. Read from data, never inferred from a flag.
+    on_discharge: bool = True
 
 
 # ---- reconciliation flags (safety-catch output) ------------------------------
@@ -86,6 +90,10 @@ class Flag(BaseModel):
     recommended_resolution: str          # what we default the disposition to
     status: ReviewStatus = "pending"
     grounding: Optional[Literal["real", "injected"]] = None  # real Synthea resource vs planted
+    # ---- agent adjudication (present when the orchestrator agent confirmed the flag) ----
+    agent_disposition: Optional[Literal["continue", "modify", "discontinue"]] = None
+    agent_action: Optional[str] = None       # the order edit the agent drafted for the clinician
+    agent_rationale: Optional[str] = None     # why the agent kept it after investigating
 
 
 class ReconStats(BaseModel):
@@ -95,12 +103,24 @@ class ReconStats(BaseModel):
     high_severity_count: int
 
 
+class AgentEvent(BaseModel):
+    """One step in the orchestrator agent's reasoning trace — either a thought or a
+    tool action. Surfaced so the loop is inspectable (the 'agentic' receipt)."""
+    kind: Literal["thought", "action"]
+    text: Optional[str] = None            # kind=thought: the model's reasoning
+    tool: Optional[str] = None            # kind=action: which tool it called
+    input: Optional[dict] = None          # kind=action: the tool arguments
+    result: Optional[str] = None          # kind=action: a short summary of what came back
+
+
 class Reconciliation(BaseModel):
     """Everything the copilot panel needs for one encounter."""
     encounter_id: str
     draft_meds: list[Med]                 # the pre-populated reconciled list
     flags: list[Flag]                     # the ranked "needs a decision" queue
     stats: ReconStats
+    mode: Literal["agent", "workflow"] = "workflow"   # how the flags were produced
+    trace: list[AgentEvent] = []          # the agent's step-by-step loop (empty in workflow mode)
 
 
 # ---- encounter list / detail -------------------------------------------------

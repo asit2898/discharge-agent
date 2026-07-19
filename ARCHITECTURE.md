@@ -2,409 +2,219 @@
 
 > Companion to [`PROJECT.md`](./PROJECT.md). `PROJECT.md` is the pitch and the
 > plain-terms **logic**; this is the **build spec** — the same idea turned into concrete
-> steps: what's plain code, what needs the model, and what each step hands the next.
+> steps: what the model decides, what stays plain code, and what each tool hands back.
 
 ## The whole thing at a glance
 
-The core idea is boring on purpose: **put every line from every source into one table,
-then group by drug and look for disagreements.** That's it.
+The core idea: **hand the model the chart + the conversation and a set of grounded
+safety tools, and let it drive** — decide which checks fit this patient, investigate the
+ambiguous ones against the record, keep what's real, and draft the order action. The
+loop is the model's; the *tools* are plain, auditable code.
 
 ```
                                    INPUTS · 4 sources
    ┌──────────────────┬──────────────────┬──────────────────┬──────────────────┐
    │  home med list   │  hospital orders │    transcript    │   signed note    │
    └────────┬─────────┴────────┬─────────┴────────┬─────────┴────────┬─────────┘
-            │   READ (no LLM)   │                  │  READ (◆ LLM)    │            STEP 1
-            ▼                   ▼                  ▼                  ▼
-        ┌───────────────────────────┐      ┌───────────────────────────┐
-        │  rows from the lists       │      │  rows from the talking     │
-        │  (drug · dose · state)     │      │  (drug · decision · quote) │
-        └─────────────┬─────────────┘      └─────────────┬─────────────┘
-                      └───────────────┬──────────────────┘
-                                      ▼                                           STEP 2
+            └──────────  Chart Compiler (plain code, no LLM)  ────────┘        STEP 0
+                                      ▼
+                    ┌───────────────────────────────────┐
+                    │  PatientState — meds · labs ·       │   the grounded substrate
+                    │  allergies · problems · assertions  │   every tool reads
+                    └──────────────────┬──────────────────┘
+                                       ▼
+   ╔═══════════════════════════════════════════════════════════════════════════╗
+   ║  ◆ ORCHESTRATOR AGENT — Claude in a tool-use loop, deciding each step        ║
+   ║                                                                             ║
+   ║    plan ──▶ run_safety_check(…) ──▶ investigate ──▶ confirm / dismiss ──▶    ║
+   ║      ▲          (grounded KB check)   (labs, problems,   (draft the order    ║
+   ║      └──────────── loop ─────────────  transcript search)  action)          ║
+   ║                                                          └──▶ finish         ║
+   ╚═══════════════════════════════════════════════════════════════════════════╝
+                                       ▼                                    STEP N
                 ┌───────────────────────────────────────────┐   plain code
-                │  ONE TABLE of med-lines — the ground truth  │
-                │  drug·strength·form·state·source·doctor·quote│
-                └──────────────────────┬──────────────────────┘
-                                       ▼                                          STEP 3
-                ┌───────────────────────────────────────────┐   ◆ LLM + guardrail
-                │  MATCHER  (+ resolve_med → RxNorm/class)     │
-                │  clean up the drug name, group table by drug │
-                └──────────────────────┬──────────────────────┘
-                                       ▼                                          STEP 4
-                ┌───────────────────────────────────────────┐   plain code
-                │  CLASSIFIER   look down each drug group      │   (truth table)
-                │  → a verdict per drug                        │
-                └───────────┬───────────────────────┬─────────┘
-                     agreements                    flags ⚠
-                            │                          ▼                          STEP 5
-                            │            ┌───────────────────────────────┐  ◆ LLM ×N
-                            │            │  EXPLAINER  (one per flag)      │  (flags only)
-                            │            │  resolution · reason · receipt  │  + precision gate
-                            │            └───────────────┬───────────────┘
-                            └─────────────┬──────────────┘
-                                          ▼                                       STEP 6
-                ┌───────────────────────────────────────────┐   plain code
-                │  ASSEMBLE + RANK   (one card per drug)       │
+                │  ASSEMBLE + RANK   (one card per issue)      │
                 └──────────────────────┬──────────────────────┘
                                        ▼
-        draft list  (the quiet ~90%)   +   disagreements  (ranked, each with a receipt)
+        draft list  (the quiet ~90%)   +   confirmed issues  (each with a drafted
+                                            action + a receipt + a reasoning trace)
 
 
-   ◆ = the model is used here · everything else is plain code
-   Model is used 3 places:  the READ of prose (transcript + note) · the Matcher · one call per flag
+   ◆ = the model drives here · the Chart Compiler, the tools, and assemble/rank are plain code
 ```
 
-Read top to bottom: four sources → one table of lines → grouped by drug → each drug
-checked against a truth table → only the flagged drugs get explained → ranked and handed
-back. The rest of this doc is one section per step.
+Read top to bottom: four sources → one grounded `PatientState` → the agent loops over
+its tools, deciding what to check and investigate → confirmed issues get a drafted action
+→ ranked and handed back, with the whole loop captured as an inspectable trace.
 
-## One design choice up front: a workflow, not an agent
+## One design choice up front: an agent, with grounded tools
 
 Per Anthropic's [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents):
-an **agent** lets the model decide its own next move in a loop (use it when you can't
-predict the path); a **workflow** runs the model through fixed, known steps (use it when
-you can).
+an **agent** lets the model decide its own next move in a loop; a **workflow** runs the
+model through fixed, known steps. This is an **agent** — the model owns the control flow:
+which checks to run, what to investigate, what to keep, what action to draft, and when
+it's done. On a simple patient it may take a handful of steps; on a complex
+multi-specialist discharge it investigates one drug across several tools.
 
-Our path is the same every time — *read → build the table → group → check → explain →
-rank* — so this is a **workflow**. That's the strength, not a cop-out: a fixed path means
-every decision is inspectable, which is the whole product. We use the model **only where
-the meaning is in prose, or the drug name is messy**; everything a computer can do
-exactly stays plain code. That's just three model calls total: reading the prose, the
-Matcher, and one call per flagged drug (and there are few of those).
-
----
-
-## Step 1 · Read the four sources
-
-Two sources are plain lists we can read field-by-field; two are prose where a person has
-to *read the meaning*. So the first split is: a **read-the-fields lane** (no model) and a
-**read-the-meaning lane** (needs the model).
-
-```
-   READ THE FIELDS  ──  no model                READ THE MEANING  ──  ◆ model
-   ════════════════════════════════             ═══════════════════════════════
-
-   ┌────────────────────────┐                   ┌────────────────────────┐
-   │ home med list          │                   │ transcript             │
-   │   → read the fields    │                   │   → pull out decisions  │
-   └───────────┬────────────┘                   └───────────┬────────────┘
-               │                                            │
-   ┌───────────┴────────────┐                   ┌───────────┴────────────┐
-   │ hospital orders        │                   │ note (A&P)             │
-   │   → read fields + who   │                   │   → pull out decisions  │
-   │      ordered it         │                   │      + who wrote them   │
-   └───────────┬────────────┘                   └───────────┬────────────┘
-               │                                            │
-               ▼                                            ▼
-       rows for the table                          rows for the table
-   drug · strength · form ·                     drug · decision (state) ·
-   state · source · doctor                      source · doctor · quote
-```
-
-**Both lanes write the same kind of row** — they just fill it from different places.
-Reading fields is free (a computer does it exactly), so the two lists cost no tokens;
-only the prose (transcript + note) uses the model. After Step 1 nothing ever looks at the
-raw sources again — everything downstream reads the table.
+The subtlety that keeps a clinical safety-catch trustworthy is that **detection stays
+grounded**. The agent cannot invent a flag out of thin air — it can only *confirm* a
+candidate that a deterministic, KB-backed check actually surfaced, and every confirmed
+issue keeps its both-sided evidence and the exact FHIR resource id. So we get agency
+(the model plans, investigates, and acts) **without** giving up the receipt (a flag still
+traces to a rule in `checks.py` + a resource in the chart). That's the hybrid: a
+model-driven loop over auditable tools.
 
 ---
 
-## Step 2 · Put every line in one table — the ground truth
+## Step 0 · Chart Compiler — build the grounded substrate (no LLM)
 
-Every line from every source becomes **one row in one table**. Six columns and a quote —
-that's the whole record, and it's all we need to both *spot* a conflict and *trace it
-back to who said it*:
-
-```
-   drug         strength  form     state    source      doctor              quote
-   ─────────────────────────────────────────────────────────────────────────────────────────
-   clopidogrel  75 mg     tablet   active   home        cardiology          —
-   clopidogrel  75 mg     tablet   held     inpatient   surgery / Okafor    —
-   clopidogrel  —         —        stop     transcript  surgery / Okafor    "holding your Plavix…"
-   clopidogrel  75 mg     tablet   resume   note        cardiology / Patel  "resume clopidogrel 75 daily"
-```
-
-| column | what it's for |
-|---|---|
-| **drug** | the key we group on (an ingredient name) |
-| **strength**, **form** | to spot dose / formulation changes within a drug |
-| **state** | what's happening to it — `active`/`held` from a list, `stop`/`resume`/`start`/`change` from talking |
-| **source** | which of the five: home · inpatient · discharge · transcript · note |
-| **doctor** | `{ name, specialty }` — to catch two teams clashing, and to cite |
-| **quote** | the receipt — the exact words, for anything said or written |
-
-### Two things we keep, three we work out
-
-We only *store* two things about where a line came from — **source** and **doctor** —
-because everything else can be worked out from them:
-
-- **on a list, or said/written?** — comes from the source. home/inpatient/discharge are
-  list-lines; transcript/note are said/written lines.
-- **how much it counts** — comes from the source too: everything on a record counts as
-  *signed*; only the transcript is *spoken*. (Used to settle disagreements, below.)
-- **drug class + is-it-a-course** — looked up from the drug name in Step 3 (statin,
-  antibiotic, …). Needed for the duplicate and orphaned-course checks.
-
-So we don't store "signed vs spoken" or "class" as their own columns — fewer columns to
-fill in means fewer things the model can get wrong.
-
-**Why doctor is `{ name, specialty }` and not just a name:** when we check whether two
-teams clash, the thing that matters is the *specialty* (surgery vs cardiology), not the
-person. Keeping specialty as its own field means later code can compare teams directly
-instead of digging it back out of a string.
+Before the agent runs, plain code (`patient_state.py`) parses the FHIR
+`related_resources` + `patient_context` into a normalized `PatientState`: the med lines
+(home / inpatient / discharge / transcript, each source-tagged and prescriber-attributed),
+the safety-relevant labs (eGFR, K, INR, A1c), the allergies with their cross-reactivity
+classes, the active problem list, and a pregnancy flag. This is cheap, reliable, and never
+hallucinates — it's the structured ground truth every tool reads. The transcript/note
+assertions (what was *said*, with a verbatim span) are extracted once here too, so the
+transcript-driven checks have something to route on.
 
 > **Absence is data.** A drug on the home list with *no* discharge row is exactly the
-> "accidentally dropped" case. (Hospital orders split into two sources — `inpatient` and
-> `discharge` — so we can tell "held during the stay" from "sent home on it.")
-
-```json
-{
-  "patient": "Philomena Goodwin",
-  "lines": [
-    { "drug": "clopidogrel", "strength": "75 mg", "form": "tablet", "state": "active",
-      "source": "home",       "doctor": { "name": "prior records", "specialty": "cardiology" } },
-    { "drug": "clopidogrel", "strength": "75 mg", "form": "tablet", "state": "held",
-      "source": "inpatient",  "doctor": { "name": "Okafor", "specialty": "surgery" } },
-    { "drug": "clopidogrel", "state": "stop",
-      "source": "transcript", "doctor": { "name": "Okafor", "specialty": "surgery" },
-      "quote": "we're holding your Plavix until after the operation" },
-    { "drug": "clopidogrel", "strength": "75 mg", "form": "tablet", "state": "resume",
-      "source": "note",       "doctor": { "name": "Patel", "specialty": "cardiology" },
-      "quote": "resume clopidogrel 75 mg daily at discharge" }
-  ]
-}
-```
-
-### Settling disagreements: trust vs. who said it
-
-Two things above line up neatly with how we settle a clash:
-
-```
-   the SOURCE tells us  →  how much to trust a line   →  used when the SAME doctor says two things
-   the DOCTOR tells us  →  is it one team or two       →  used to catch DIFFERENT doctors clashing
-```
-
-**"Signed beats spoken" only holds within one doctor.** It's there so one doctor's
-written record can override their *own* offhand remark — the surgeon says "let's hold the
-Plavix" in the room, then signs "resume Plavix": same doctor reconsidering, the signed
-line wins, the spoken line becomes the receipt. That's the *only* clash we settle
-quietly.
-
-**Across different doctors we never settle it — we flag it.** A spoken "hold" from the
-surgeon is *not* beaten by a signed "resume" from cardiology; those are two real,
-independent judgments. So:
-
-- **same doctor**, spoken vs signed → keep the signed one (they changed their mind)
-- **different doctors** — spoken-vs-signed *or* signed-vs-signed — that disagree → **flag
-  it for a human**, show both, don't pick a winner.
-
-Quietly settling is the rare exception, so it needs *proof* it's the same doctor; if we
-can't tell who said a spoken line, we **flag it** rather than assume. This is why every
-row carries the doctor — it's what tells "one doctor reconsidering" from "two doctors
-disagreeing."
-
-The table is now **the one thing every later step reads.** It's still flat — one drug can
-be four rows — which the next step fixes.
+> "accidentally dropped" case — which is why every source is a tagged lane on the same med.
 
 ---
 
-## Step 3 · The Matcher — clean up the drug name, group the table by drug
+## The agent's tools
 
-To compare a drug we first have to *gather* it: clopidogrel is four separate rows right
-now. The Matcher pulls every row for the same drug into one group — which is just the
-table grouped by drug (drug down the side, source across the top):
+The model is handed nine tools and chooses among them. Three families:
 
-```
-                 home      inpatient   discharge   transcript      note
-   ───────────────────────────────────────────────────────────────────────
-   clopidogrel   active    held        ── (gone)   "stop" (spoken) "resume" (signed)
-   atorvastatin  active    active      active      ─               ─
-   cefdinir      ─         active      active      ─               "7-day course"
-```
+**Read the chart** (grounded facts, no decisions):
+- `get_medication_table` — every med line with dose, status, source, prescriber, and
+  whether it's on the discharge order set. The agent starts here.
+- `get_labs` · `get_problem_list` · `get_allergies` — the rest of the `PatientState`.
 
-Once it's grouped, every situation is just a **shape you can read off the row** — no
-cleverness later: clopidogrel present home+inpatient but **blank at discharge** = dropped;
-cefdinir inpatient/discharge but **not home, no end date** = orphaned course; two teams on
-one drug = duplication.
+**Investigate** (ground or refute a candidate):
+- `search_transcript` — search the transcript **and** the signed note for a term (a drug
+  name) to find what was actually said and by whom. This is how the agent grounds a
+  cross-prescriber conflict or refutes a false positive before deciding.
 
-**This is the one step that needs the model,** because "the same drug" is messy:
+**Run a grounded safety check** — the detection backbone:
+- `run_safety_check(check)` — run **one** KB-backed check from the menu and get back
+  candidate issues, each with a `candidate_id` and both-sided evidence. The menu is the
+  eleven checks in `checks.py`: drug–allergy, renal dose, drug–drug interaction, duplicate
+  therapy, dropped home med, teratogen-in-pregnancy, cross-prescriber anticoagulant,
+  adverse drug event, denied history, discontinued-but-active, mentioned-not-recorded.
+  The agent picks which ones fit the patient.
 
-- `metoprolol tartrate 25mg` vs `metoprolol succinate ER 50mg` — **same drug, different
-  form** → must go in **one** group (so we can flag the switch).
-- `simvastatin` vs `atorvastatin` — **different drugs, same class** → stay **two** groups
-  (that split *is* the duplicate-statin flag).
-- `"your water pill"` → resolve to the furosemide group.
+**Decide + act** (the "take action" clause):
+- `confirm_issue(candidate_id, disposition, action, rationale)` — confirm a candidate as
+  real and **draft the concrete order edit** a clinician should take (continue / modify /
+  discontinue). Guarded: you can only confirm a `candidate_id` a check actually surfaced.
+- `dismiss_issue(candidate_id, reason)` — kill a false positive (the alert-fatigue
+  control), with the reason recorded.
+- `finish(summary)` — end the loop when every relevant check has run and every candidate
+  is either confirmed-with-an-action or dismissed.
 
-It runs as **one model call that loads the grouping rules as its instructions** (like a
-reusable rulebook it reads before acting):
-
-1. Group rows with the **same ingredient** (ingredient is the key).
-2. **Same ingredient, different strength/form → same group** (a change, not two drugs).
-3. **Different ingredient → never merge**, even in the same class (two statins = two
-   groups = a duplicate flag).
-4. Resolve messy names (brands, `"water pill"`, typos) to the ingredient first.
-5. **Tag each group with its class** (statin, antiplatelet…) **and whether it's a course
-   drug** (antibiotic/steroid) — the next step needs class for the duplicate check and
-   course for orphaned-course.
-
-**Its one tool — `resolve_med(name)`.** Instead of trusting the model's memory for drug
-facts, it calls a small lookup backed by **RxNorm / RxClass**: `resolve_med(name) →
-{ ingredient, class }`. This is more trustworthy *and* explainable ("grouped because
-RxNorm says same ingredient" beats "the model thought so"), and it answers the only two
-drug questions we have: identity and class. It is **not** web search — that would be
-unpredictable, off-mission (we compare sources, we don't research drugs), and a live-demo
-risk. For the demo the lookup is a **small cached file** of real RxNav answers for the
-demo drugs; swapping in the live API later is a one-line change.
-
-**A plain-code check runs on the model's output** (it can only *fix*, never *hide*):
-
-```
-   the table  ──▶  ┌──────────────────────┐  ──▶  ┌──────────────────────┐  ──▶  drug groups
-                   │  Matcher (model)      │       │  check (no model)     │
-                   │  loads grouping rules │       │  • no group mixes 2   │
-                   │  → groups the rows    │       │    different drugs     │
-                   └──────────────────────┘       │  • every row lands in  │
-                                                   │    exactly one group   │
-                                                   └──────────────────────┘
-```
-
-Cheap enough to do all at once: Philomena's table is ~20–40 short rows, so one call
-handles it. **Out: the drug groups** (each with its class + course tags) — what the next
-step checks.
+Each tool call is recorded as a step in the trace, so the loop is fully inspectable.
 
 ---
 
-## Step 4 · The Classifier — look down each drug group, give a verdict
+## The loop the agent runs (a real trace, hero patient)
 
-This answers the core question — *do the sources agree on whether she takes this, and at
-what dose?* — one drug group at a time. **Because the Matcher already did the messy part
-(identity + class), this is plain code:** each situation is just a pattern of which
-sources are filled and what they say. A truth table, no model.
-
-**The verdict is really home vs. discharge** — what she was on vs. what she's going home
-on. The other three sources are *evidence*, not the verdict: `inpatient` says what
-happened during the stay, `transcript`/`note` say why. This matters: an inpatient
-**`held`** is a temporary hold for surgery, **not** a stop — reading it as a stop is how a
-naive tool false-flags a drug (metformin held the morning of surgery, resumed at
-discharge = **unchanged**, not discontinued).
+Given the system prompt below, Claude drives roughly this — **deciding each step**, not
+following a script:
 
 ```
-   WHAT THE GROUP LOOKS LIKE  (verdict = home vs discharge; other sources = evidence)  →  VERDICT
-   ─────────────────────────────────────────────────────────────────────────────────────────────
-   home active, discharge active, same dose, nothing contradicting it            →  unchanged  (pre-fill)
-   home active, discharge active, strength/form differs                          →  dose-changed
-   not on home, on discharge, and NOT a course drug                              →  newly-started
-   home active, gone at discharge, and someone said "stop"                        →  discontinued (clean)
-   home active (+inpatient), gone at discharge, nobody said stop                   →  accidental-drop ⚠
-   said/written but no matching order                                            →  said-not-ordered ⚠
-   new AND a course drug (antibiotic/steroid) AND no end date                    →  orphaned-course ⚠
-
-   ── same doctor disagrees with themselves → settle it quietly ──────────────────────────────────
-   one doctor, spoken vs signed contradict                                       →  keep the signed one; no flag
-
-   ── different doctors disagree → hand to a human ────────────────────────────────────────────────
-   same drug, different doctors, contradict (spoken/signed OR signed/signed)      →  cross-team conflict ⚠
-   two drugs kept at discharge, same class, different doctors                     →  cross-team duplicate ⚠
+💭 "I'll start by getting the full medication picture."
+ ▸ get_medication_table          → 17 med lines across home/inpatient/discharge/transcript
+💭 "Let me gather clinical context before running checks."
+ ▸ get_labs                       → k=5.8, egfr=24, a1c=7.8
+ ▸ get_problem_list · get_allergies → 16 problems · Penicillin
+💭 "High-risk: eGFR 24 (AKI on CKD), K 5.8, penicillin allergy, AF, multiple prescribers."
+ ▸ run_safety_check drug_allergy / renal_dose / cross_prescriber / interaction / …
+💭 "Investigate the ones needing transcript grounding."
+ ▸ search_transcript "enoxaparin" → Dr. Patel (Cardiology): "we can stop the Lovenox…"
+💭 "Cardiology directed stopping it, but Ortho ordered it — different teams. Surface it,
+    don't auto-resolve."
+ ▸ confirm_issue enoxaparin → discontinue, action="…cross-prescriber; both services confirm"
+ ▸ dismiss_issue <weak candidate> → reason="documented titration, not a duplicate"
+ …
+ ▸ finish "10 issues confirmed with drafted actions; candidates dismissed as false positives"
 ```
 
-Three rows lean on things worked out earlier, so this step stays a plain lookup:
-
-- **duplicate** uses the class tag, and only counts drugs **kept at discharge** — a
-  duplicate that was already cleaned up isn't a flag; one that *survives to discharge* is.
-- **orphaned-course** uses the course tag — without it, every new *chronic* med (a new
-  statin has no end date, correctly) would wrongly look orphaned.
-- the **cross-team** rows use the doctor's specialty carried on every row.
-
-The thing that decides *settle quietly* vs *flag* is **whose** lines clash. One doctor
-reconsidering (spoken then signed) is the only one we settle silently. Different doctors
-disagreeing goes to a human with both shown side by side — **whatever the trust levels**:
-a spoken "hold" from surgery is not overridden by a signed "resume" from cardiology
-(Philomena's surgery / hospitalist / ID moment). If we can't tell who said a spoken line,
-we treat it as a different doctor and flag.
-
-**Out: every drug tagged, split into two piles — agreements** (pre-filled, collapsed) and
-**flags** (the ⚠ ones headed for the queue).
+The agent chose which six checks to run (not all eleven), searched the transcript for the
+drugs that mattered, applied the authority rule on the cross-prescriber conflict, and
+pruned the candidate set down to the confirmed queue — each with a drafted action.
 
 ---
 
-## Step 5 · The Explainer — turn each flag into a card a clinician can act on
+## The rules the agent works under (in its system prompt)
 
-A verdict like `accidental-drop` is a machine label, not something you act on. The
-Explainer turns each flag into a card. **This is the only fan-out: one model call per
-flag, in parallel — and only the flags, never the agreements.** That's the cost story:
-the agreements (most drugs) never touch the model after the Matcher, and precision keeps
-the flag count small.
+**Authority — signed beats spoken, but only within one prescriber.** The signed
+order/note outranks a spoken remark *only* when it's the same clinician reconsidering
+their own words (surgeon says "hold the Plavix" in the room, then signs "resume" — the
+signed line wins, the spoken line becomes the receipt). Across **different** prescribers,
+a spoken directive is **not** overridden by another team's signed order — the agent
+surfaces the conflict with both sides and does not pick a winner. This is exactly the
+multi-specialist hero case (surgery / hospitalist / cardiology / ID), and it's why every
+med line carries *who* ordered it.
 
-Each per-flag call does four things:
+**Grounding — no invented flags, no invented quotes.** The agent can only confirm a
+candidate a check surfaced, and the evidence (the transcript span, the chart resource id)
+is passed in on the candidate, not re-found — it *cites*, it can't fabricate.
 
-1. **Draft the fix** using the trust rule (signed wins — e.g. "Resume clopidogrel 75 mg —
-   per signed note"; for a cross-team clash, present both, no auto-pick).
-2. **Write the one-line reason** for the clinician.
-3. **Write the plain-English "why this changed"** line for the patient summary.
-4. **Attach the receipt** — the quote + doctor that raised it.
+**Precision — a quiet queue beats a noisy one.** The agent is told to dismiss weak,
+low-confidence candidates (alert fatigue is the failure mode we design against), while
+erring toward *surfacing* high-severity safety issues. This is the agent's version of the
+old self-verifier: refutation happens inside the loop, as a decision, not as a separate
+pass.
 
-Plus a **precision gate**: drop weak, low-confidence flags. A quiet queue the clinician
-trusts beats a noisy one they ignore — that's the failure mode we design against.
-
-Two rules that keep it honest:
-
-- **It never changes the verdict.** Step 4 already decided *what* the flag is; Step 5 only
-  dresses it up. The decision stays plain code and inspectable.
-- **The receipt is passed in, not re-found.** The quote + doctor already sit on the row
-  (Step 2), so the call *cites* them — it can't invent a quote.
-- **Not every flag has a quote.** A silent drop (tacrolimus on home + inpatient, gone at
-  discharge, never discussed) has no quote — **the gap itself is the receipt** ("on home
-  list + kept inpatient; missing from discharge"). The receipt is either a quote or that
-  kind of plain fact.
-
-**Out: the flag cards** — each with its verdict, the fix, the reason, the patient line,
-and a receipt.
+**It never signs.** Every confirmed issue is a *drafted* action pended for a licensed
+human. Decision support, not decision replacement.
 
 ---
 
-## Step 6 · Assemble + rank — the thing the screen shows
+## Assemble + rank — the thing the screen shows (no LLM)
 
-Plain code, no model. Put the two piles together and order the queue so attention lands
-where it matters.
-
-**One card per drug.** A drug can trip more than one thing (clopidogrel is both a
-cross-team conflict *and* half of a duplicate). Merge by drug so the clinician sees
-clopidogrel once, with both issues on it — never the same drug twice.
-
-- **Draft list** = the agreements, pre-filled and collapsed.
-- **Queue** = the flag cards, **ranked** by:
-  - **how serious the verdict is** — an accidental-drop or a cross-team conflict beats a
-    documented dose change. (Without this, a silently dropped transplant drug wouldn't
-    rise to the top on drug-class alone.)
-  - **high-risk drugs** — blood thinners / antiplatelets / insulin, **plus
-    narrow-margin drugs like tacrolimus** (which is Philomena's #1 flag).
-  - **the patient** — old age + lots of meds nudge the whole queue up.
-
-  (These only affect *ordering* — no labs, no kidney numbers, no diagnosis list. We rank,
-  we don't judge safety.)
+Plain code (`engine.py`) turns the agent's confirmed issues into the `Reconciliation` the
+UI renders: the draft med list (everything that agreed, pre-filled) plus the confirmed
+queue, ranked by severity. Each card carries the drafted `agent_action`, the disposition,
+the rationale, and the both-sided receipt. The full `trace` rides along so the loop is
+visible in the UI (the `AgentTrace` panel) — the "agentic" receipt for a judge.
 
 ```
-   final output
-   ├─ draft list      ← agreements, pre-filled  (the quiet ~90%)
-   └─ disagreements   ← ranked cards, each with a receipt  (the few that need a human)
+   final output (Reconciliation)
+   ├─ draft_meds   ← agreements, pre-filled            (the quiet ~90%)
+   ├─ flags        ← confirmed issues, ranked, each with a drafted action + receipt
+   └─ trace        ← the agent's step-by-step loop     (inspectable)
 ```
 
-Nothing applies itself. **We line it up and show it; the human decides.**
+Nothing applies itself. **The agent lines it up, drafts the action, and shows its work;
+the human decides.**
+
+---
+
+## Fallback — the deterministic workflow
+
+When no `ANTHROPIC_API_KEY` is present (offline, or eval), `engine.py` runs the original
+deterministic pipeline instead: extract chart-derived assertions → run all eleven checks →
+adversarial self-verify (pass-through offline) → dedup → rank. Same output shape, same
+grounding, no model. Set `DISCHARGE_AGENTIC=0` to force this path even with a key (used by
+the offline eval harness so scoring is deterministic). The engine reports which mode
+produced a result via `Reconciliation.mode` (`"agent"` | `"workflow"`).
 
 ---
 
 ## Stack (hackathon)
 
-**Hand-rolled, calling Claude directly — no heavy agent framework.** The flow is a fixed
-pipeline (with a fan-out at Step 5), not something a framework helps with, and every judge
-question is "how does it decide?" — hand-rolled keeps that answer visible.
+**Hand-rolled, calling Claude directly — no heavy agent framework.** The loop is a small,
+readable tool-use driver (`llm.run_tool_loop`), and every judge question is "how does it
+decide?" — hand-rolled keeps that answer visible.
 
-- **Python backend**, **Anthropic Messages API** — plain calls for the prose-read, the
-  Matcher, and the Explainer; tool-use only for the Matcher's `resolve_med`.
-- **Pydantic** for the shapes passed between steps (also the test/eval schema): the table
-  (Step 2), the drug groups (Step 3), the verdicts (Step 4), the final output (Step 6).
-  Its real job is checking the model's JSON at each hand-off — reject a bad shape at the
-  door instead of letting it crash later.
-- **The plain-code steps are just code** (read-the-fields, classifier, the Matcher check,
-  assemble/rank) — testable with no model.
-- UI: a small React page hitting a FastAPI endpoint that returns the Step 6 output.
+- **Python backend**, **Anthropic Messages API** — `run_tool_loop` drives the multi-turn
+  tool-use loop; the model chooses tools, Python executes them and feeds results back.
+- **The tools are plain code** — the Chart Compiler, the eleven KB-backed checks
+  (`checks.py`), the transcript search, assemble/rank — all testable with no model, and
+  all reusable by the deterministic fallback.
+- **Pydantic** for the shapes crossing the API boundary (`Med`, `Flag`, `AgentEvent`,
+  `Reconciliation`) — also the eval schema.
+- UI: a small React page hitting a FastAPI endpoint that returns the `Reconciliation`,
+  including the agent trace it renders in the `AgentTrace` panel.

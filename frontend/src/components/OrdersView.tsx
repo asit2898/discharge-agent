@@ -1,6 +1,15 @@
+import { useEffect, useRef } from 'react'
 import type { Med } from '../types'
 import { sigOf } from '../recon'
 import { Icon, type IconName } from './icons'
+
+const norm = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase()
+const orderHit = (name: string, needle: string) => {
+  if (!needle) return false
+  const a = norm(name)
+  const b = norm(needle)
+  return a.includes(b) || b.includes(a)
+}
 
 // Epic Orders activity = the active order profile, grouped by where the order originated
 // (home/PTA, inpatient, discharge). Read-only here — the *editable* reconciliation lives in
@@ -13,7 +22,7 @@ const SECTIONS: { key: Med['source']; title: string; icon: IconName }[] = [
   { key: 'discharge', title: 'Discharge Orders', icon: 'note' },
 ]
 
-function OrderTable({ meds }: { meds: Med[] }) {
+function OrderTable({ meds, highlight = '' }: { meds: Med[]; highlight?: string }) {
   return (
     <table className="orders">
       <thead>
@@ -27,7 +36,7 @@ function OrderTable({ meds }: { meds: Med[] }) {
       </thead>
       <tbody>
         {meds.map((m) => (
-          <tr key={m.id}>
+          <tr key={m.id} className={orderHit(m.name, highlight) ? 'hit' : ''}>
             <td className="ord-name">
               <span className="ord-ic">
                 <Icon name="pill" size={13} />
@@ -55,12 +64,14 @@ export function OrdersView({
   subtitle,
   note,
   sources,
+  highlight,
 }: {
   meds: Med[]
   title?: string
   subtitle?: string
   note?: string
   sources?: Med['source'][]
+  highlight?: string
 }) {
   const sections = SECTIONS.filter((s) => !sources || sources.includes(s.key))
   const shown = sections
@@ -68,8 +79,14 @@ export function OrdersView({
     .filter((s) => s.rows.length > 0)
   const total = shown.reduce((n, s) => n + s.rows.length, 0)
 
+  // scroll the highlighted order into view when the target changes
+  const rootRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (highlight) rootRef.current?.querySelector('tr.hit')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [highlight])
+
   return (
-    <div className="work">
+    <div className="work" ref={rootRef}>
       <div className="work-head">
         <h2>{title}</h2>
         <span className="sub">{subtitle ?? `${total} active orders`}</span>
@@ -88,7 +105,7 @@ export function OrdersView({
               {s.title}
               <span className="ord-section-count">{s.rows.length}</span>
             </h3>
-            <OrderTable meds={s.rows} />
+            <OrderTable meds={s.rows} highlight={highlight} />
           </div>
         ))
       )}

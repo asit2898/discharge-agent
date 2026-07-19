@@ -11,6 +11,7 @@ import { Storyboard } from './components/Storyboard'
 import { NavigatorSidebar, DISCHARGE_STEPS } from './components/NavigatorSidebar'
 import { MedRecWorkspace } from './components/MedRecWorkspace'
 import { CopilotPanel } from './components/CopilotPanel'
+import { AgentTrace } from './components/AgentTrace'
 import { ResultsReview } from './components/ResultsReview'
 import { ProblemList } from './components/ProblemList'
 import { TranscriptView } from './components/TranscriptView'
@@ -103,7 +104,18 @@ export default function App() {
   )
 
   const flags = recon?.flags ?? []
-  const openCount = flags.filter((f) => (statuses[f.id] ?? 'pending') === 'pending').length
+  // Count DECISIONS, not raw flags — one disposition per med (a med with 3 issues is one
+  // decision), plus each non-med finding. Keeps the nav badge + footer in sync with the
+  // Med Rec header, which is decision-based.
+  const medMatches = (f: Flag, m: { id: string; name: string }) =>
+    (!!f.chart_evidence?.resource_id && f.chart_evidence.resource_id === m.id) ||
+    (!!f.med_name && m.name.toLowerCase().startsWith(f.med_name.toLowerCase()))
+  const draftMeds = recon?.draft_meds ?? []
+  const isPending = (f: Flag) => (statuses[f.id] ?? 'pending') === 'pending'
+  const looseFlags = flags.filter((f) => !draftMeds.some((m) => medMatches(f, m)))
+  const openCount =
+    draftMeds.filter((m) => flags.some((f) => medMatches(f, m) && isPending(f))).length +
+    looseFlags.filter(isPending).length
 
   const act = (id: string, s: ReviewStatus) =>
     setStatuses((prev) => ({ ...prev, [id]: s }))
@@ -115,27 +127,15 @@ export default function App() {
         'embed as a pended draft — the physician reviews and signs. We never sign.',
     )
 
-  // Jump from a flag's grounding to the tab that holds its proof, and highlight it there.
-  const openSource = (flag: Flag, which: 'transcript' | 'chart') => {
-    if (which === 'transcript' && flag.transcript_evidence) {
-      setActiveActivity('Transcript')
-      setEvidence({ text: flag.transcript_evidence })
-      return
-    }
-    const ce = flag.chart_evidence
-    if (!ce) return
-    if (ce.resource_type === 'Observation') {
-      setActiveActivity('Results Review')
-      setEvidence({ text: ce.display ?? '' })
-    } else if (ce.resource_type === 'Condition') {
+  // Jump from a flag's grounding to the tab that holds its reason, and highlight it there.
+  const openSource = (target: { tab: string; highlight: string }) => {
+    setEvidence({ text: target.highlight })
+    if (target.tab === 'Problem List') {
       setActiveActivity('Discharge')
       setActiveStep('problems')
-      setEvidence({ text: ce.display ?? '' })
     } else {
-      // MedicationRequest / AllergyIntolerance → the Med Rec row (already highlighted)
-      setActiveActivity('Discharge')
-      setActiveStep('medrec')
-      setEvidence(null)
+      // Transcript / Orders / Results Review are top-level activities
+      setActiveActivity(target.tab)
     }
   }
 
@@ -227,6 +227,7 @@ export default function App() {
             meds={detail.meds}
             title="Orders"
             note="The active order profile grouped by origin. Read-only here — the editable reconciliation lives in the Discharge → Med Rec activity."
+            highlight={evidence?.text}
           />
         ) : activeActivity !== 'Discharge' ? (
           <div className="work">
@@ -277,6 +278,7 @@ export default function App() {
             ) : (
               <>
                 <div className="work" style={{ padding: 0 }}>
+                  <AgentTrace trace={recon.trace} mode={recon.mode} flagCount={flags.length} />
                   <MedRecWorkspace
                     meds={recon.draft_meds}
                     flags={flags}

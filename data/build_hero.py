@@ -140,6 +140,10 @@ def main():
         m["authoredOn"] = "2025-11-01T09:00:00-07:00"
         m["requester"] = requester(PCP)
         m["dosageInstruction"] = m.get("dosageInstruction") or [{"text": ""}]
+        # Discharge snapshot: home meds are carried onto the discharge draft EXCEPT insulin,
+        # which was omitted (the planted dropped-home-med). This is the point-in-time state
+        # the default disposition reads from — not inferred from any flag.
+        m["_on_discharge"] = "insulin" not in t
         if "metformin" in t: real_med["metformin"] = m
         elif "amlodipine" in t: real_med["amlodipine"] = m
         elif "insulin" in t: real_med["insulin"] = m

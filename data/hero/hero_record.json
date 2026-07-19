@@ -1130,7 +1130,8 @@
       {
        "text": ""
       }
-     ]
+     ],
+     "_on_discharge": false
     },
     {
      "resourceType": "MedicationRequest",
@@ -1167,7 +1168,8 @@
       {
        "text": ""
       }
-     ]
+     ],
+     "_on_discharge": true
     },
     {
      "resourceType": "MedicationRequest",
@@ -1204,7 +1206,8 @@
       {
        "text": ""
       }
-     ]
+     ],
+     "_on_discharge": true
     },
     {
      "resourceType": "MedicationRequest",
@@ -1241,7 +1244,8 @@
       {
        "text": ""
       }
-     ]
+     ],
+     "_on_discharge": true
     },
     {
      "resourceType": "MedicationRequest",

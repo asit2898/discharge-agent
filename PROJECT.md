@@ -327,13 +327,16 @@ that need a human decision. We assemble and surface; the human decides.
 ## Architecture
 
 The full engineering build spec — every step from the logic above turned into concrete
-workflow (what's deterministic vs. an LLM call, the contracts between steps, the stack)
-— lives in **[`ARCHITECTURE.md`](./ARCHITECTURE.md)**.
+code (what the model decides vs. what stays plain code, the tools, the contracts, the
+stack) — lives in **[`ARCHITECTURE.md`](./ARCHITECTURE.md)**.
 
-In one line: it's a **workflow, not an agent** — a fixed path
-(*read → aggregate → match → classify → explain → rank*) that spends the LLM only where
-meaning lives in prose or drug identity is fuzzy (extract · 1 Matcher · N_flags
-Explainers), and keeps everything else deterministic so every decision is inspectable.
+In one line: it's an **orchestrator agent over grounded tools** — Claude drives a
+tool-use loop (plan → run the safety checks that fit this patient → investigate the
+ambiguous ones against the chart + transcript → confirm/dismiss → draft the order action),
+while the tools themselves (the Chart Compiler and the eleven KB-backed checks) stay
+deterministic. The agent gets the agency; the tools keep the receipt — a confirmed flag
+still traces to a rule in code + an exact FHIR resource, and the whole loop is an
+inspectable trace. (A deterministic no-LLM workflow is the offline/eval fallback.)
 
 ## UI (the demoable 20%)
 

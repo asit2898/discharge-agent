@@ -310,7 +310,7 @@ button { font-family: inherit; cursor: pointer; }
 /* physician-locked / reconciled — solid */
 .act.cont.on.reconciled, .act.cont.on.confirmed { background: var(--mr-green); color: #fff; border-color: var(--mr-green); }
 .act.mod.on.confirmed { background: var(--epic-blue); color: #fff; border-color: var(--epic-blue); }
-.act.dc.on.confirmed { background: var(--alert-red); color: #fff; border-color: var(--alert-red); }
+.act.dc.on.reconciled, .act.dc.on.confirmed { background: var(--alert-red); color: #fff; border-color: var(--alert-red); }
 /* copilot-proposed default — pending review, dashed + color-coded by disposition */
 .act.on.proposed { border-style: dashed; }
 .act.cont.on.proposed { background: #eaf6ee; color: #14713d; border-color: var(--ok-green); }
@@ -589,6 +589,25 @@ button { font-family: inherit; cursor: pointer; }
 .ev-src-tab { font-size: 10.5px; color: var(--ink-soft); margin-top: 3px; }
 .ev-none { font-size: 12px; color: var(--ink-soft); font-style: italic; }
 
+/* grounding chips — link a flag's reasons to the tab that holds them */
+.ev-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ev-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid var(--epic-line-strong); border-radius: 14px; background: #fff;
+  padding: 3px 9px 3px 8px; font-size: 11px; color: var(--ink); cursor: pointer;
+}
+.ev-chip:hover { border-color: var(--epic-blue); box-shadow: 0 1px 5px rgba(0,0,0,.08); }
+.ev-chip svg { flex: none; }
+.ev-chip.order svg { color: #24557f; }
+.ev-chip.lab svg { color: var(--epic-teal); }
+.ev-chip.condition svg { color: var(--copilot-1); }
+.ev-chip-label { font-weight: 600; }
+.ev-chip-tab { color: var(--epic-blue-d); font-weight: 700; font-size: 10px; }
+
+/* Orders highlight on jump */
+.orders tr.hit td { background: #fff6d6 !important; box-shadow: inset 0 0 0 1px #e6c98f; }
+.orders tr.hit { animation: hitpulse 1.4s ease-out 1; }
+
 /* ---------- Results Review flowsheet ---------- */
 .flowsheet { border-collapse: collapse; background: var(--white); border: 1px solid var(--epic-line);
   border-radius: 6px; overflow: hidden; font-size: 13px; min-width: 480px; }
@@ -837,3 +856,26 @@ button { font-family: inherit; cursor: pointer; }
 .med-decision { margin-top: 10px; border-top: 2px solid var(--copilot-tint); padding-top: 10px; }
 .med-decision-head { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px;
   color: var(--copilot-1); margin-bottom: 6px; }
+
+/* ── Agent trace — the orchestrator loop, made visible (the "agentic" receipt) ── */
+.agent-trace { margin: 10px 12px 0; border: 1px solid #cfe0f0; border-radius: 8px;
+  background: linear-gradient(180deg, #f3f9ff, #eef5fc); overflow: hidden; }
+.agent-trace-head { width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; background: none; border: none; cursor: pointer; text-align: left;
+  font-size: 12.5px; color: #14324e; }
+.agent-trace-head:hover { background: #e7f1fb; }
+.at-badge { flex: none; font-weight: 800; font-size: 11px; letter-spacing: .3px;
+  color: #fff; background: var(--epic-blue); padding: 2px 8px; border-radius: 10px; }
+.at-summary { flex: 1; color: #33526e; }
+.at-summary b { color: #0e4f8f; }
+.at-chevron { flex: none; color: var(--epic-blue); font-size: 12px; }
+.agent-trace-steps { list-style: none; margin: 0; padding: 4px 12px 12px 12px;
+  max-height: 320px; overflow-y: auto; border-top: 1px solid #dce9f5; }
+.agent-trace-steps li { display: flex; gap: 8px; padding: 4px 0; font-size: 12px;
+  line-height: 1.5; border-bottom: 1px dashed #e4eef8; }
+.agent-trace-steps li:last-child { border-bottom: none; }
+.at-icon { flex: none; width: 16px; text-align: center; }
+.at-thought .at-text { color: #40566b; font-style: italic; }
+.at-action .at-text { color: #1f3346; }
+.at-action b { color: #0e4f8f; }
+.at-result { color: #64748b; }

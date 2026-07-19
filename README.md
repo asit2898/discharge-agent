@@ -28,7 +28,8 @@ integration story, and the competitive landscape.
 - `synthetic-ambient-fhir-25/` — provided Abridge dataset (25 synthetic ambient +
   FHIR encounters) used as the data substrate
 - `backend/discharge_agent/` — FastAPI service: dataset loader → med normalizer →
-  reconciliation engine (**stub today**, neuro-symbolic safety-catch loop later)
+  Chart Compiler → **orchestrator agent** (`agent.py`, a Claude tool-use loop over the
+  grounded KB checks in `checks.py`), with a deterministic no-LLM workflow as fallback
 - `frontend/` — Vite + React + TS **Epic Discharge Navigator clone** with the
   Reconciliation Copilot embedded as a SMART-on-FHIR extension panel
 
@@ -47,11 +48,15 @@ Frontend (port 5173, proxies `/api` → 8000):
 cd frontend && npm install && npm run dev
 ```
 
-Open http://localhost:5173. It boots on the **hero discharge** (Margaret Alvarez —
-hip-fracture ORIF with new AF + UTI, four prescribing teams) showing five grounded
-catches; the top switcher also loads the real 25 encounters. The engine is a
-deterministic **stub** whose output shape matches the labeled eval taxonomy, so the
-real Claude-driven detector drops in behind the same API contract.
+Open http://localhost:5173. It boots on the **hero discharge** (a hip-fracture ORIF
+with new AF + UTI + AKI, four prescribing teams) showing grounded catches, with the
+**orchestrator agent's reasoning trace** expandable above the med-rec workspace; the top
+switcher also loads the real 25 encounters. With an `ANTHROPIC_API_KEY` present the agent
+drives the reconciliation live (deciding which checks to run, investigating the
+transcript, drafting each order action); without a key the deterministic workflow produces
+the same output shape so the UI works offline.
+
+Set `DISCHARGE_AGENTIC=0` to force the deterministic workflow even with a key.
 
 ### API
 

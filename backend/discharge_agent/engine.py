@@ -16,13 +16,15 @@ reads data/*labels*.json — those exist only for the offline eval harness.
 """
 from __future__ import annotations
 
+import os
 from typing import Optional
 
-from . import checks, kb, llm, verifier
+from . import agent, checks, kb, llm, verifier
 from .assertions import extract_assertions
 from .loader import get_record
+from .patient_state import PatientState
 from .patient_state import compile_state
-from .schemas import Flag, Reconciliation, ReconStats
+from .schemas import AgentEvent, Flag, Reconciliation, ReconStats
 
 # Rank order for the "needs a decision" queue: severity, then high-risk types first.
 _SEVERITY_RANK = {"high": 0, "moderate": 1, "low": 2}
@@ -33,8 +35,15 @@ _SEVERITY_RANK = {"high": 0, "moderate": 1, "low": 2}
 _DROP_THRESHOLD = {"high": 0.85, "moderate": 0.60, "low": 0.50}
 
 # Reconciliations are pure functions of static records + the KB, so cache them.
-# Keyed by (record_id, llm_available) so results refresh when the key comes online.
-_RECON_CACHE: dict[tuple[str, bool], Reconciliation] = {}
+# Keyed by (record_id, llm_available, mode) so results refresh when the key comes
+# online or the engine mode changes.
+_RECON_CACHE: dict[tuple[str, bool, str], Reconciliation] = {}
+
+
+def _agentic_enabled() -> bool:
+    """Use the orchestrator agent when the LLM is live, unless explicitly disabled.
+    Set DISCHARGE_AGENTIC=0 to force the deterministic workflow (e.g. for eval)."""
+    return llm.available() and os.environ.get("DISCHARGE_AGENTIC", "1") != "0"
 
 
 def _dedup_sig(f: Flag):
@@ -74,18 +83,30 @@ def _detail_for(record_id: str):
     return rec, rec.get("transcript", ""), rec.get("note", "")
 
 
-def reconcile(record_id: str) -> Optional[Reconciliation]:
-    cache_key = (record_id, llm.available())
-    if cache_key in _RECON_CACHE:
-        return _RECON_CACHE[cache_key]
+def _assemble(record_id: str, state: PatientState, flags: list[Flag], *,
+              mode: str, trace: list[AgentEvent]) -> Reconciliation:
+    """Build the Reconciliation from a set of flags — shared by both engine modes."""
+    meds = state.meds
+    flagged_meds = {f.chart_evidence.resource_id for f in flags
+                    if f.chart_evidence and f.chart_evidence.resource_id}
+    return Reconciliation(
+        encounter_id=record_id,
+        draft_meds=meds,
+        flags=flags,
+        stats=ReconStats(
+            total_meds=len(meds),
+            agree_count=len(meds) - len(flagged_meds),
+            flag_count=len(flags),
+            high_severity_count=sum(1 for f in flags if f.severity == "high"),
+        ),
+        mode=mode,
+        trace=trace,
+    )
 
-    record, transcript, note = _detail_for(record_id)
-    if record is None:
-        return None
 
-    # 1. Chart Compiler
-    state = compile_state(record)
-
+def _workflow_flags(state: PatientState, transcript: str, note: str) -> list[Flag]:
+    """The deterministic pipeline (fallback / eval path): extract → checks → verify →
+    dedup → rank. Same logic as before the agent, factored out."""
     # 2. Assertion Extractor (Claude when available; chart-derived assertions always)
     assertions = extract_assertions(state, transcript, note)
 
@@ -106,21 +127,36 @@ def reconcile(record_id: str) -> Optional[Reconciliation]:
     # 6. Dedup near-identical findings, then rank by severity
     flags = _dedup(flags)
     flags.sort(key=lambda f: _SEVERITY_RANK.get(f.severity, 9))
+    return flags
 
-    meds = state.meds
-    flagged_meds = {f.chart_evidence.resource_id for f in flags
-                    if f.chart_evidence and f.chart_evidence.resource_id}
-    recon = Reconciliation(
-        encounter_id=record_id,
-        draft_meds=meds,
-        flags=flags,
-        stats=ReconStats(
-            total_meds=len(meds),
-            agree_count=len(meds) - len(flagged_meds),
-            flag_count=len(flags),
-            high_severity_count=sum(1 for f in flags if f.severity == "high"),
-        ),
-    )
+
+def reconcile(record_id: str) -> Optional[Reconciliation]:
+    mode = "agent" if _agentic_enabled() else "workflow"
+    cache_key = (record_id, llm.available(), mode)
+    if cache_key in _RECON_CACHE:
+        return _RECON_CACHE[cache_key]
+
+    record, transcript, note = _detail_for(record_id)
+    if record is None:
+        return None
+
+    # 1. Chart Compiler (deterministic) — shared substrate for both modes.
+    state = compile_state(record)
+
+    recon: Optional[Reconciliation] = None
+    if mode == "agent":
+        # The orchestrator agent drives the loop: it decides which grounded checks to
+        # run, investigates, self-verifies, and drafts each action. Falls back to the
+        # deterministic workflow if the loop can't run.
+        result = agent.run_agent(record_id, state, transcript, note)
+        if result is not None:
+            flags, trace = result
+            recon = _assemble(record_id, state, flags, mode="agent", trace=trace)
+
+    if recon is None:
+        flags = _workflow_flags(state, transcript, note)
+        recon = _assemble(record_id, state, flags, mode="workflow", trace=[])
+
     _RECON_CACHE[cache_key] = recon
     return recon
 

@@ -63,6 +63,46 @@ export function truncate(s: string | null, n = 120): string {
   return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s
 }
 
+// Best-effort grounding: link a flag to the OTHER tabs where its reasons live — the
+// ordered drug(s) in Orders, a cited lab in Results Review, a condition in Problem List.
+// (The drug's own row in Med Rec is redundant, so it's not a link.) Derived on the
+// frontend until the engine emits structured related_evidence[].
+export interface EvLink {
+  tab: 'Orders' | 'Results Review' | 'Problem List'
+  kind: 'order' | 'lab' | 'condition'
+  label: string
+  highlight: string
+}
+
+const LAB_HINTS: { re: RegExp; name: string; label: string }[] = [
+  { re: /egfr|renal|kidney|creatinine|\baki\b/i, name: 'eGFR', label: 'eGFR' },
+  { re: /potassium|hyperkalemia/i, name: 'Potassium', label: 'Potassium' },
+  { re: /\binr\b|warfarin|anticoagulation control/i, name: 'INR', label: 'INR' },
+  { re: /a1c|glycemic control/i, name: 'Hemoglobin A1c', label: 'A1c' },
+]
+
+export function evidenceLinks(flag: Flag): EvLink[] {
+  const out: EvLink[] = []
+  const text = `${flag.explanation} ${flag.recommended_resolution} ${flag.suggested_fix}`
+
+  // ordered drug(s) → Orders (compound "A + B" interaction flags yield two)
+  for (const d of (flag.med_name ?? '').split('+').map((s) => s.trim()).filter(Boolean)) {
+    out.push({ tab: 'Orders', kind: 'order', label: truncate(d, 34), highlight: d })
+  }
+  // cited lab value → Results Review
+  for (const lb of LAB_HINTS) {
+    if (lb.re.test(text) && !out.some((l) => l.kind === 'lab' && l.highlight === lb.name)) {
+      out.push({ tab: 'Results Review', kind: 'lab', label: lb.label, highlight: lb.name })
+    }
+  }
+  // charted condition → Problem List
+  const ce = flag.chart_evidence
+  if (ce?.resource_type === 'Condition' && ce.display) {
+    out.push({ tab: 'Problem List', kind: 'condition', label: truncate(ce.display, 34), highlight: ce.display })
+  }
+  return out
+}
+
 export const STATUS_VERB: Record<ReviewStatus, string> = {
   pending: 'Pending',
   accepted: 'Accepted',

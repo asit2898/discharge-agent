@@ -109,6 +109,13 @@ def normalize_meds(record: dict[str, Any]) -> list[Med]:
     for mr in rr.get("MedicationRequest", []) or []:
         cat = _category(mr)
         dose, route, freq = _dosage(mr)
+        src = _source(cat, mr, inpatient)
+        # Point-in-time discharge snapshot: on the discharge draft or not. Inpatient-only
+        # orders default off (they stop at discharge); discharge/home default on. An
+        # explicit `_on_discharge` marker in the data overrides (e.g. a dropped home med).
+        on_discharge = mr.get("_on_discharge")
+        if on_discharge is None:
+            on_discharge = src != "inpatient"
         meds.append(
             Med(
                 id=mr.get("id", f"mr-{len(meds)}"),
@@ -119,9 +126,10 @@ def normalize_meds(record: dict[str, Any]) -> list[Med]:
                 status=mr.get("status"),
                 intent=mr.get("intent"),
                 category="home" if cat == "community" else cat,
-                source=_source(cat, mr, inpatient),  # type: ignore[arg-type]
+                source=src,  # type: ignore[arg-type]
                 prescriber=_prescriber(mr),
                 authored_on=mr.get("authoredOn"),
+                on_discharge=bool(on_discharge),
             )
         )
     return meds
